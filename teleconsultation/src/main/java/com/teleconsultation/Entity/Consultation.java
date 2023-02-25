@@ -26,7 +26,4 @@ public class Consultation {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "doctor_id", referencedColumnName = "doctorId")
     private Doctor doctor;
-    String type;
-
-
 }

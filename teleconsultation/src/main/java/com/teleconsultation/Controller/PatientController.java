@@ -38,19 +38,23 @@ public class PatientController {
         patientService.joinQueue(patient);
         return true;
     }
+
+    // get patient Name
     @GetMapping("/get-name/{patientId}")
     public String getPatientName(@PathVariable("patientId") Long patientId){
         return patientService.getPatientById(patientId).getPatientName();
     }
+
+    // add patient
     @PostMapping("/add")
     public Patient addPatient(@RequestBody Patient patient){
         return patientService.addPatient(patient);
     }
 
-    // exisiting phone number ka patients list
+    // existing phone number ka patients list
     @GetMapping("/patient-list/phone-number")
-    public ResponseEntity<List<PatientModel>> phoneNumber(@RequestBody @Valid Map<String, String> obj){
-//        System.out.println(obj.get("phoneNumber"));
+    public ResponseEntity<List<PatientModel>> phoneNumber(@RequestParam @Valid Map<String, String> obj){
+        System.out.println(obj.get("phoneNumber"));
         List<Patient> patients = patientService.getPatientListForPhoneNumber(obj.get("phoneNumber"));
         List<PatientModel> patientModelList = new ArrayList<>();
         for(Patient patient : patients){
@@ -68,8 +72,7 @@ public class PatientController {
         return ResponseEntity.ok(patientModelList);
     }
 
-    //create new
-
+    //Get Prescription
     @GetMapping("/prescription/{patientId}/{doctorId}")
     public ResponseEntity<byte[]> downloadPrescription(@PathVariable Long patientId, @PathVariable Long doctorId) {
         Prescription prescription = prescriptionService.searchByPatientAndDoctor(patientId, doctorId);
