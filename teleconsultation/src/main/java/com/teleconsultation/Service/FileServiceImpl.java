@@ -39,7 +39,8 @@ public class FileServiceImpl implements FileService {
             content.showText(title);
             content.setFont(font, fontSize);
             content.newLineAtOffset(-100, -leading*2);
-
+            content.showText("Date: " + prescription.getDate().toString());
+            content.newLineAtOffset(0, -leading);
             content.showText("Doctor Name: " + prescription.getDoctor().getDoctorName());
             content.newLineAtOffset(0, -leading);
             content.showText("Patient Name: " + prescription.getPatient().getPatientName());

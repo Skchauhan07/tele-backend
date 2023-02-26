@@ -15,7 +15,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
     @Override
-    public boolean doctorLogin(Doctor doctor) {
+    public boolean doctorLogin(String username, String password) {
         return false;
     }
 

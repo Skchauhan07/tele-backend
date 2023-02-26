@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @RestController
@@ -35,8 +37,8 @@ public class DoctorController {
 //    private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
-    public boolean login(Doctor doctor){
-        if(doctorService.doctorLogin(doctor)){
+    public boolean login(@RequestParam String username, @RequestParam String password){
+        if(doctorService.doctorLogin(username, password)){
             return true;
         }
         return false;
@@ -61,7 +63,7 @@ public class DoctorController {
     }
 
     @GetMapping("/get-name/{doctorId}")
-    public String getDoctorName(@PathVariable Long doctorId){
+    public String getDoctorName(@PathVariable("doctorId") Long doctorId){
         return doctorService.getDoctorById(doctorId).getDoctorName();
     }
     //view Health Record of a particular patient
@@ -93,7 +95,9 @@ public class DoctorController {
 
     @PostMapping("/add/prescription/{patientId}/{doctorId}")
     public ResponseEntity<Boolean> addPrescription(@PathVariable("patientId") Long patientId, @PathVariable("doctorId") Long doctorId, @RequestBody PrescriptionModel prescriptionModel){
+//        Date todayDate = new Date();
         Prescription prescription = Prescription.builder()
+                .date(prescriptionModel.getDate())
                 .medicalFinding(prescriptionModel.getMedicalFinding())
                 .dosage(prescriptionModel.getDosage())
                 .medicineName(prescriptionModel.getMedicineName())

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 
 public interface DoctorService {
-    public boolean doctorLogin(Doctor doctor);
+    public boolean doctorLogin(String username, String password);
     public Doctor addDoctor(Doctor doctor);
     public void scheduleFollowUp(Patient patient);
     public Prescription issuePrescription(Patient patient);
