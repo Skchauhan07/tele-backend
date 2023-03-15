@@ -1,8 +1,8 @@
-package com.teleconsultation.Service;
+package com.teleconsultation.Service.Impl;
 
 import com.teleconsultation.Entity.HealthRecord;
 import com.teleconsultation.Repository.HealthRecordRepository;
-import com.teleconsultation.Service.Impl.HealthRecordService;
+import com.teleconsultation.Service.HealthRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

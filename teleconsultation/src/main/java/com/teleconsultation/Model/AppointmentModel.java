@@ -1,27 +1,21 @@
-package com.teleconsultation.Entity;
+package com.teleconsultation.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Appointment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long appointmentId;
+public class AppointmentModel {
     @Temporal(TemporalType.DATE)
     private Date date;
     private String symptoms;
     private String description;
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
 }

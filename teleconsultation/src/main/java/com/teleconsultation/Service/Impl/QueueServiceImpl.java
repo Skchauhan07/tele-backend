@@ -1,10 +1,10 @@
-package com.teleconsultation.Service;
+package com.teleconsultation.Service.Impl;
 
 import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Repository.DoctorRepository;
 import com.teleconsultation.Repository.PatientRepository;
-import com.teleconsultation.Service.Impl.ConsultationService;
-import com.teleconsultation.Service.Impl.QueueService;
+import com.teleconsultation.Service.ConsultationService;
+import com.teleconsultation.Service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -29,7 +29,7 @@ public class Doctor {
     @Column(name = "email")
     private String emailId;
     @Column(name = "status")
-    private boolean statusQueue;
+    private String isAvailable;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctor")
     private List<Prescription> prescriptions;

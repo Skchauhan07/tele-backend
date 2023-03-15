@@ -1,12 +1,10 @@
 package com.teleconsultation.Controller;
 
-import com.teleconsultation.Entity.Doctor;
-import com.teleconsultation.Entity.HealthRecord;
-import com.teleconsultation.Entity.Prescription;
+import com.teleconsultation.Entity.*;
+import com.teleconsultation.Model.AppointmentModel;
 import com.teleconsultation.Model.HealthRecordModel;
 import com.teleconsultation.Model.PrescriptionModel;
-import com.teleconsultation.Repository.DoctorRepository;
-import com.teleconsultation.Service.Impl.*;
+import com.teleconsultation.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -32,16 +29,15 @@ public class DoctorController {
     @Autowired
     private PatientService patientService;
     @Autowired
+    private AppointmentService appointmentService;
+    @Autowired
     private QueueService queueService;
 //    @Autowired
 //    private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
-    public boolean login(@RequestParam String username, @RequestParam String password){
-        if(doctorService.doctorLogin(username, password)){
-            return true;
-        }
-        return false;
+    public Long login(@RequestParam String username, @RequestParam String password){
+        return doctorService.doctorLogin(username, password);
     }
 
     //after adding doctor initially he is not in queue. so statusQueue = false
@@ -52,7 +48,7 @@ public class DoctorController {
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
                 .password(doctor.getPassword())
-                .statusQueue(false)
+                .isAvailable("NO")
                 .build();
         return doctorService.addDoctor(doctor1);
     }
@@ -93,20 +89,51 @@ public class DoctorController {
         return healthRecordModel1;
     }
 
+
+    //Returning Prescription Id
     @PostMapping("/add/prescription/{patientId}/{doctorId}")
-    public ResponseEntity<Boolean> addPrescription(@PathVariable("patientId") Long patientId, @PathVariable("doctorId") Long doctorId, @RequestBody PrescriptionModel prescriptionModel){
+    public ResponseEntity<Long> addPrescription(@PathVariable("patientId") Long patientId, @PathVariable("doctorId") Long doctorId, @RequestBody PrescriptionModel prescriptionModel){
 //        Date todayDate = new Date();
+        Doctor doctor = doctorService.getDoctorById(doctorId);
+        if (doctor == null) {
+            System.out.println("Doctor Not Found");
+            return ResponseEntity.notFound().build();
+        }
+
+        Patient patient = patientService.getPatientById(patientId);
+        if (patient == null) {
+            System.out.println("Patient Not Fount");
+            return ResponseEntity.notFound().build();
+        }
+
         Prescription prescription = Prescription.builder()
                 .date(prescriptionModel.getDate())
                 .medicalFinding(prescriptionModel.getMedicalFinding())
                 .dosage(prescriptionModel.getDosage())
                 .medicineName(prescriptionModel.getMedicineName())
                 .duration(prescriptionModel.getDuration())
-                .doctor(doctorService.getDoctorById(doctorId))
-                .patient(patientService.getPatientById(patientId))
+                .doctor(doctor)
+                .patient(patient)
                 .build();
+
         Prescription createdPrescription = prescriptionService.add(prescription);
-        return ResponseEntity.status(HttpStatus.CREATED).body(true);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPrescription.getPrescriptionId());
+    }
+
+    @GetMapping("/appointment/get-patient-details")
+    public ResponseEntity<AppointmentModel> getAppointmentDetailsOfPatient(@RequestParam("patientId") Long patientId){
+        Appointment appointment = appointmentService.getAppointmentDetailsOfPatient(patientId);
+        if (appointment == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        AppointmentModel appointmentModel = AppointmentModel.builder()
+                .description(appointment.getDescription())
+                .symptoms(appointment.getSymptoms())
+                .date(appointment.getDate())
+                .build();
+
+        return ResponseEntity.ok().body(appointmentModel);
     }
 
 }

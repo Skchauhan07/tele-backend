@@ -1,6 +1,6 @@
-package com.teleconsultation.Service;
+package com.teleconsultation.Service.Impl;
 
-import com.teleconsultation.Service.Impl.ConsultationService;
+import com.teleconsultation.Service.ConsultationService;
 import org.springframework.stereotype.Service;
 
 @Service

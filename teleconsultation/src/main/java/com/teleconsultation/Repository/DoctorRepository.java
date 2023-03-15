@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-    Doctor findByEmailId(Doctor doctor);
+    Doctor findDoctorByEmailIdAndPassword(String emailId, String password);
     Doctor findDoctorByDoctorId(Long id);
 }
