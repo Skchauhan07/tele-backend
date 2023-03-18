@@ -1,8 +1,10 @@
 package com.teleconsultation.Controller;
 
+import com.teleconsultation.Entity.Consultation;
 import com.teleconsultation.Entity.Doctor;
 import com.teleconsultation.Entity.HealthRecord;
 import com.teleconsultation.Entity.Prescription;
+import com.teleconsultation.Model.ConsultationModel;
 import com.teleconsultation.Model.HealthRecordModel;
 import com.teleconsultation.Model.PrescriptionModel;
 import com.teleconsultation.Repository.DoctorRepository;
@@ -33,6 +35,8 @@ public class DoctorController {
     private PatientService patientService;
     @Autowired
     private QueueService queueService;
+    @Autowired
+    private ConsultationService consultationService;
 //    @Autowired
 //    private BCryptPasswordEncoder passwordEncoder;
 
@@ -52,9 +56,14 @@ public class DoctorController {
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
                 .password(doctor.getPassword())
-                .statusQueue(false)
                 .build();
         return doctorService.addDoctor(doctor1);
+    }
+
+    @PostMapping("/consultation/{doctorId}")
+    public int startConsultation(@PathVariable("doctorId") Long doctorId){
+        Integer roomId = consultationService.startConsultation(doctorId);
+        return roomId;
     }
 
     @GetMapping("/view")
