@@ -34,13 +34,13 @@ public class UserService implements UserDetailsService {
 
         // Check if user is a patient
         List<Patient> patients = patientRepository.findPatientByPhoneNumber(phoneNumber);
-        if (patient != null) {
-            return new User(patient.getPhoneNumber(), patient.getPassword(),
+        if (patients != null) {
+            return new User(patients.getPhoneNumber(), patients.getPassword(),
                     AuthorityUtils.createAuthorityList("ROLE_PATIENT"));
         }
 
 
 
-        throw new UsernameNotFoundException("User not found with username: " + username);
+        throw new UsernameNotFoundException("User not found with username: " + phoneNumber);
     }
 }
