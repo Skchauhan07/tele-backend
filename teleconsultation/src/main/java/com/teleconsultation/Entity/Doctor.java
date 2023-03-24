@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -22,8 +21,8 @@ public class Doctor {
     @Column(name = "name")
     @NotBlank(message = "Specify Doctor Name")
     private String doctorName;
-    @Column(name = "contact")
-    private String contact;
+    @Column(name = "phone_number")
+    private String phoneNumber;
     @Column(name = "password")
     private String password;
     @Column(name = "email")

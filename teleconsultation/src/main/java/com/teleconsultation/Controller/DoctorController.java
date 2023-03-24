@@ -53,7 +53,7 @@ public class DoctorController {
     public Doctor addDoctor(@Valid @RequestBody Doctor doctor){
         Doctor doctor1 = Doctor.builder()
                 .doctorName(doctor.getDoctorName())
-                .contact(doctor.getContact())
+                .phoneNumber(doctor.getPhoneNumber())
                 .emailId(doctor.getEmailId())
                 .password(doctor.getPassword())
                 .build();

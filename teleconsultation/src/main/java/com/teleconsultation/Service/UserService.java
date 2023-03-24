@@ -13,6 +13,7 @@ import com.teleconsultation.Repository.PatientRepository;
 import com.teleconsultation.Repository.DoctorRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -23,20 +24,22 @@ public class UserService implements UserDetailsService {
     private DoctorRepository doctorRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+        // Check if user is a doctor
+        Doctor doctor = doctorRepository.findDoctorByPhoneNumber(phoneNumber);
+        if (doctor != null) {
+            return new User(doctor.getPhoneNumber(), doctor.getPhoneNumber(),
+                    AuthorityUtils.createAuthorityList("ROLE_DOCTOR"));
+        }
+
         // Check if user is a patient
-        Patient patient = patientRepository.findByPhoneNumber(username);
+        List<Patient> patients = patientRepository.findPatientByPhoneNumber(phoneNumber);
         if (patient != null) {
             return new User(patient.getPhoneNumber(), patient.getPassword(),
                     AuthorityUtils.createAuthorityList("ROLE_PATIENT"));
         }
 
-        // Check if user is a doctor
-        Doctor doctor = doctorRepository.findByEmailId(username);
-        if (doctor != null) {
-            return new User(doctor.getEmailId(), doctor.getPassword(),
-                    AuthorityUtils.createAuthorityList("ROLE_DOCTOR"));
-        }
+
 
         throw new UsernameNotFoundException("User not found with username: " + username);
     }
