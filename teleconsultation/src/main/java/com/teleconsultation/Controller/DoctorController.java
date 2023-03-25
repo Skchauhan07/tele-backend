@@ -8,6 +8,7 @@ import com.teleconsultation.Model.ConsultationModel;
 import com.teleconsultation.Model.HealthRecordModel;
 import com.teleconsultation.Model.PrescriptionModel;
 import com.teleconsultation.Repository.DoctorRepository;
+import com.teleconsultation.Service.*;
 import com.teleconsultation.Service.Impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,9 +43,9 @@ public class DoctorController {
 
     @GetMapping("/login")
     public boolean login(@RequestParam String username, @RequestParam String password){
-        if(doctorService.doctorLogin(username, password)){
+        Long id = doctorService.doctorLogin(username, password);
+        if(id != -1L)
             return true;
-        }
         return false;
     }
 
