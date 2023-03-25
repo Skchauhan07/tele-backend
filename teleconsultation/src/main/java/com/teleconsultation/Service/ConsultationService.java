@@ -7,5 +7,5 @@ import com.teleconsultation.Model.ConsultationModel;
 import org.springframework.data.util.Pair;
 
 public interface ConsultationService {
-    public void startConsultation(Long doctorId, Pair<Patient, Integer> pair);
+    public void startConsultation(Long doctorId, Pair<Patient, Integer> pair) throws Exception;
 }

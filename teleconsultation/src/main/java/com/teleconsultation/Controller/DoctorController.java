@@ -61,7 +61,7 @@ public class DoctorController {
     }
 
     @PostMapping("/consultation/{doctorId}")
-    public int startConsultation(@PathVariable("doctorId") Long doctorId){
+    public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
         Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
         Doctor doctor = doctorService.getDoctorById(doctorId);
         if(doctor.getIsAvailable() == "NO"){

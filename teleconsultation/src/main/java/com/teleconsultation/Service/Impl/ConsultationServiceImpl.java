@@ -20,17 +20,30 @@ public class ConsultationServiceImpl implements ConsultationService {
     @Autowired
     private DoctorService doctorService;
     @Override
-    public void startConsultation(Long doctorId, Pair<Patient, Integer> pair) {
+    public void startConsultation(Long doctorId, Pair<Patient, Integer> pair) throws Exception {
         Doctor doctor1 = doctorService.getDoctorById(doctorId);
+        Doctor doctor = Doctor.builder()
+                .doctorName(doctor1.getDoctorName())
+                .doctorId(doctor1.getDoctorId())
+                .emailId(doctor1.getEmailId())
+                .contact(doctor1.getContact())
+                .isAvailable(doctor1.getIsAvailable())
+                .password(doctor1.getPassword())
+                .prescriptions(doctor1.getPrescriptions())
+                .build();
         Patient patient1 = pair.getFirst();
-        Integer roomId = pair.getSecond();
         Date date = new Date();
         Consultation consultation = Consultation.builder()
                 .date(date)
                 .time(date)
-                .doctor(doctor1)
+                .doctor(doctor)
                 .patient(patient1)
                 .build();
-        consultationRepository.save(consultation);
+        try {
+            consultationRepository.save(consultation);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
     }
 }
