@@ -5,6 +5,7 @@ import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Entity.Prescription;
 import com.teleconsultation.Model.AppointmentModel;
 import com.teleconsultation.Model.PatientModel;
+import com.teleconsultation.Model.PrescriptionModel;
 import com.teleconsultation.Service.AppointmentService;
 import com.teleconsultation.Service.FileService;
 import com.teleconsultation.Service.PatientService;
@@ -118,6 +119,11 @@ public class PatientController {
                 .build();
         //returning appointment id
         return appointmentService.saveAppointment(appointment);
+    }
+
+    @GetMapping("/prescription-list/{patientId}")
+    public ResponseEntity<List<PrescriptionModel>> getPrescriptionsOfPatient(@PathVariable("patientId") Long patientId){
+        return null;
     }
 
 }

@@ -16,15 +16,12 @@ import java.util.Date;
 @Service
 public class ConsultationServiceImpl implements ConsultationService {
     @Autowired
-    private QueueService queueService;
-    @Autowired
     private ConsultationRepository consultationRepository;
     @Autowired
     private DoctorService doctorService;
     @Override
-    public Integer startConsultation(Long doctorId) {
+    public Integer startConsultation(Long doctorId, Pair<Patient, Integer> pair) {
         Doctor doctor1 = doctorService.getDoctorById(doctorId);
-        Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
         Patient patient1 = pair.getFirst();
         Integer roomId = pair.getSecond();
         Date date = new Date();

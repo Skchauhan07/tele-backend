@@ -4,7 +4,8 @@ import com.teleconsultation.Entity.Consultation;
 import com.teleconsultation.Entity.Doctor;
 import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Model.ConsultationModel;
+import org.springframework.data.util.Pair;
 
 public interface ConsultationService {
-    public Integer startConsultation(Long doctorId);
+    public Integer startConsultation(Long doctorId, Pair<Patient, Integer> pair);
 }

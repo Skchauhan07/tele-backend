@@ -1,9 +1,6 @@
 package com.teleconsultation.Controller;
 
-import com.teleconsultation.Entity.Consultation;
-import com.teleconsultation.Entity.Doctor;
-import com.teleconsultation.Entity.HealthRecord;
-import com.teleconsultation.Entity.Prescription;
+import com.teleconsultation.Entity.*;
 import com.teleconsultation.Model.ConsultationModel;
 import com.teleconsultation.Model.HealthRecordModel;
 import com.teleconsultation.Model.PrescriptionModel;
@@ -12,6 +9,7 @@ import com.teleconsultation.Service.*;
 import com.teleconsultation.Service.Impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,7 +61,8 @@ public class DoctorController {
 
     @PostMapping("/consultation/{doctorId}")
     public int startConsultation(@PathVariable("doctorId") Long doctorId){
-        Integer roomId = consultationService.startConsultation(doctorId);
+        Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
+        Integer roomId = consultationService.startConsultation(doctorId, pair);
         return roomId;
     }
 
