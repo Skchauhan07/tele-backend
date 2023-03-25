@@ -20,7 +20,7 @@ public class ConsultationServiceImpl implements ConsultationService {
     @Autowired
     private DoctorService doctorService;
     @Override
-    public Integer startConsultation(Long doctorId, Pair<Patient, Integer> pair) {
+    public void startConsultation(Long doctorId, Pair<Patient, Integer> pair) {
         Doctor doctor1 = doctorService.getDoctorById(doctorId);
         Patient patient1 = pair.getFirst();
         Integer roomId = pair.getSecond();
@@ -32,6 +32,5 @@ public class ConsultationServiceImpl implements ConsultationService {
                 .patient(patient1)
                 .build();
         consultationRepository.save(consultation);
-        return roomId;
     }
 }

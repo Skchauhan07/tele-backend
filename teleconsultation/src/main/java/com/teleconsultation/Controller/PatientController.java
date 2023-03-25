@@ -71,6 +71,7 @@ public class PatientController {
     // add patient
     @PostMapping("/add")
     public Patient addPatient(@RequestBody Patient patient){
+        patient.setStatusQueue("NO");
         return patientService.addPatient(patient);
     }
 

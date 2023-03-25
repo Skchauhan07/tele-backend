@@ -55,6 +55,7 @@ public class DoctorController {
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
                 .password(doctor.getPassword())
+                .isAvailable("YES")
                 .build();
         return doctorService.addDoctor(doctor1);
     }
@@ -62,8 +63,13 @@ public class DoctorController {
     @PostMapping("/consultation/{doctorId}")
     public int startConsultation(@PathVariable("doctorId") Long doctorId){
         Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
-        Integer roomId = consultationService.startConsultation(doctorId, pair);
-        return roomId;
+        Doctor doctor = doctorService.getDoctorById(doctorId);
+        if(doctor.getIsAvailable() == "NO"){
+            return -1;
+        }
+        doctor.setIsAvailable("NO");
+        consultationService.startConsultation(doctorId, pair);
+        return pair.getSecond();
     }
 
     @GetMapping("/view")

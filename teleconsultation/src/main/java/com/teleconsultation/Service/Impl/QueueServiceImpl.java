@@ -24,6 +24,7 @@ public class QueueServiceImpl implements QueueService {
     private ConsultationService consultationService;
     public void addPatientToQueue(Patient patient, Integer roomId) {
         patient.setStatusQueue("YES");
+        System.out.println(patient.getPatientName() + " Added to Queue");
         Pair<Patient, Integer> pair = Pair.of(patient, roomId);
         pairQueue.offer(pair);
     }
@@ -38,6 +39,7 @@ public class QueueServiceImpl implements QueueService {
         Pair<Patient, Integer> patientIntegerPair = pairQueue.poll();
         if(patientIntegerPair != null && patientIntegerPair.getFirst().getStatusQueue() == "YES"){
             patientIntegerPair.getFirst().setStatusQueue("NO");
+            System.out.println(patientIntegerPair.getFirst().getPatientName() + " Popped from Queue");
             return patientIntegerPair;
         } else if (patientIntegerPair == null) {
             return null;
