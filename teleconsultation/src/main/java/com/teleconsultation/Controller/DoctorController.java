@@ -60,7 +60,7 @@ public class DoctorController {
         return doctorService.addDoctor(doctor1);
     }
 
-    @PostMapping("/consultation/{doctorId}")
+    @GetMapping("/consultation/{doctorId}")
     public int startConsultation(@PathVariable("doctorId") Long doctorId){
         Integer roomId = consultationService.startConsultation(doctorId);
         return roomId;

@@ -24,7 +24,7 @@ public class UserService implements UserDetailsService {
     private DoctorRepository doctorRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String phoneNumber){
         // Check if user is a doctor
         Doctor doctor = doctorRepository.findDoctorByPhoneNumber(phoneNumber);
         if (doctor != null) {
@@ -35,12 +35,11 @@ public class UserService implements UserDetailsService {
         // Check if user is a patient
         List<Patient> patients = patientRepository.findPatientByPhoneNumber(phoneNumber);
         if (patients != null) {
-            return new User(patients.getPhoneNumber(), patients.getPassword(),
+            return new User(patients.get(0).getPhoneNumber(), patients.get(0).getPhoneNumber(),
                     AuthorityUtils.createAuthorityList("ROLE_PATIENT"));
         }
 
-
-
-        throw new UsernameNotFoundException("User not found with username: " + phoneNumber);
+        return new User(phoneNumber, phoneNumber,
+                AuthorityUtils.createAuthorityList("ROLE_PATIENT"));
     }
 }
