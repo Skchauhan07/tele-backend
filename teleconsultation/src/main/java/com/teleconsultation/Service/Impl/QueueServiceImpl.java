@@ -6,6 +6,7 @@ import com.teleconsultation.Repository.PatientRepository;
 import com.teleconsultation.Service.ConsultationService;
 import com.teleconsultation.Service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -13,7 +14,7 @@ import java.util.Queue;
 
 @Service
 public class QueueServiceImpl implements QueueService {
-    private Queue<Patient> patientsQueue = new LinkedList<>();
+    private Queue<Pair<Patient, Integer>> pairQueue = new LinkedList<>();
     @Autowired
     private PatientRepository patientRepository;
     @Autowired
@@ -21,9 +22,10 @@ public class QueueServiceImpl implements QueueService {
 
     @Autowired
     private ConsultationService consultationService;
-    public void addPatientToQueue(Patient patient) {
+    public void addPatientToQueue(Patient patient, Integer roomId) {
         patient.setStatusQueue(true);
-        patientsQueue.offer(patient);
+        Pair<Patient, Integer> pair = Pair.of(patient, roomId);
+        pairQueue.offer(pair);
     }
 
     @Override
@@ -32,15 +34,14 @@ public class QueueServiceImpl implements QueueService {
     }
 
     @Override
-    public Patient getNextPatient() {
-        Patient patient = patientsQueue.poll();
-        if(patient != null && patient.isStatusQueue()){
-            patient.setStatusQueue(false);
-            return patient;
-        } else if (patient == null) {
+    public Pair<Patient, Integer> getNextInPairQueue() {
+        Pair<Patient, Integer> patientIntegerPair = pairQueue.poll();
+        if(patientIntegerPair != null && patientIntegerPair.getFirst().isStatusQueue()){
+            patientIntegerPair.getFirst().setStatusQueue(false);
+            return patientIntegerPair;
+        } else if (patientIntegerPair == null) {
             return null;
         }
-        return getNextPatient();
+        return getNextInPairQueue();
     }
-
 }

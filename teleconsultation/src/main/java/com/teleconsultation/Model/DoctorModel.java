@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class DoctorModel {
-    private Long doctorId;
     private String doctorName;
     private String contact;
     private String password;

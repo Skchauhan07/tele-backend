@@ -35,11 +35,14 @@ public class PatientController {
     @Autowired
     private FileService fileService;
     // Patient joins the Queue so set status = true.
-    @PostMapping("/join-queue")
-    public boolean joinQueue(Patient patient){
+    @PostMapping("/join-queue/{patientId}")
+    public boolean joinQueue(@PathVariable Long patientId, @RequestParam("roomId") Integer roomId){
         //if patient already in queue
-        patient.setStatusQueue(true);
-        patientService.joinQueue(patient);
+        Patient patient = patientService.getPatientById(patientId);
+        if(patient.isStatusQueue()){
+            return false;
+        }
+        patientService.joinQueue(patient, roomId);
         return true;
     }
 

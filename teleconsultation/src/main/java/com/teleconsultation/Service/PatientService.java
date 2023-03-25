@@ -8,7 +8,7 @@ import java.util.List;
 public interface PatientService {
     public boolean patientLogin(Patient patient);
 
-    void joinQueue(Patient patient);
+    void joinQueue(Patient patient, Integer roomId);
 
     Patient getPatientById(Long patientId);
 

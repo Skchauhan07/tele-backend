@@ -26,8 +26,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void joinQueue(Patient patient) {
-        queueService.addPatientToQueue(patient);
+    public void joinQueue(Patient patient, Integer roomId) {
+        queueService.addPatientToQueue(patient, roomId);
     }
 
     @Override
