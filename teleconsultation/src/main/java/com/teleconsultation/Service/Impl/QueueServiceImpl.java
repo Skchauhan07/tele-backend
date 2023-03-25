@@ -23,21 +23,21 @@ public class QueueServiceImpl implements QueueService {
     @Autowired
     private ConsultationService consultationService;
     public void addPatientToQueue(Patient patient, Integer roomId) {
-        patient.setStatusQueue(true);
+        patient.setStatusQueue("YES");
         Pair<Patient, Integer> pair = Pair.of(patient, roomId);
         pairQueue.offer(pair);
     }
 
     @Override
     public void leavePatientQueue(Patient patient) {
-        patient.setStatusQueue(false);
+        patient.setStatusQueue("NO");
     }
 
     @Override
     public Pair<Patient, Integer> getNextInPairQueue() {
         Pair<Patient, Integer> patientIntegerPair = pairQueue.poll();
-        if(patientIntegerPair != null && patientIntegerPair.getFirst().isStatusQueue()){
-            patientIntegerPair.getFirst().setStatusQueue(false);
+        if(patientIntegerPair != null && patientIntegerPair.getFirst().getStatusQueue() == "YES"){
+            patientIntegerPair.getFirst().setStatusQueue("NO");
             return patientIntegerPair;
         } else if (patientIntegerPair == null) {
             return null;

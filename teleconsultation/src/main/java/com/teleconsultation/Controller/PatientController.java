@@ -38,9 +38,9 @@ public class PatientController {
     // Patient joins the Queue so set status = true.
     @PostMapping("/join-queue/{patientId}")
     public boolean joinQueue(@PathVariable Long patientId, @RequestParam("roomId") Integer roomId){
-        //if patient already in queue
+        //if patient already in queue then its status is yes
         Patient patient = patientService.getPatientById(patientId);
-        if(patient.isStatusQueue()){
+        if(patient.getStatusQueue() == "YES"){
             return false;
         }
         patientService.joinQueue(patient, roomId);
@@ -63,6 +63,7 @@ public class PatientController {
                 .gender(patient.getGender())
                 .medicalHistory(patient.getMedicalHistory())
                 .phoneNumber(patient.getPhoneNumber())
+                .statusQueue(patient.getStatusQueue())
                 .build();
         return ResponseEntity.ok().body(patientModel);
     }
@@ -87,7 +88,7 @@ public class PatientController {
                     .phoneNumber(patient.getPhoneNumber())
                     .gender(patient.getGender())
                     .medicalHistory(patient.getMedicalHistory())
-                    .statusQueue(patient.isStatusQueue())
+                    .statusQueue(patient.getStatusQueue())
                     .build();
             patientModelList.add(patientModel);
         }
