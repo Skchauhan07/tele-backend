@@ -1,6 +1,7 @@
 package com.teleconsultation.Model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PrescriptionModel {
     @Temporal(TemporalType.DATE)
     private Date date;

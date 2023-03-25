@@ -10,6 +10,8 @@ import com.teleconsultation.Service.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PrescriptionServiceImpl implements PrescriptionService {
     @Autowired
@@ -30,5 +32,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         Doctor doctor = doctorService.getDoctorById(doctorId);
         Patient patient = patientService.getPatientById(patientId);
         return prescriptionRepository.searchPrescriptionByDoctorAndPatient(doctor, patient);
+    }
+
+    @Override
+    public List<Prescription> searchByPatient(Long patientId) {
+        Patient patient = patientService.getPatientById(patientId);
+        if(patient == null) {
+            return null;
+        }
+        return prescriptionRepository.searchPrescriptionByPatient(patient);
     }
 }

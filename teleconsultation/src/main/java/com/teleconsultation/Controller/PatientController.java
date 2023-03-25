@@ -123,7 +123,21 @@ public class PatientController {
 
     @GetMapping("/prescription-list/{patientId}")
     public ResponseEntity<List<PrescriptionModel>> getPrescriptionsOfPatient(@PathVariable("patientId") Long patientId){
-        return null;
+        List<Prescription> prescriptions = prescriptionService.searchByPatient(patientId);
+        if(prescriptions == null)
+            return ResponseEntity.notFound().build();
+        List<PrescriptionModel> prescriptionModels = new ArrayList<>();
+        for (Prescription prescription : prescriptions){
+            PrescriptionModel prescriptionModel = PrescriptionModel.builder()
+                    .date(prescription.getDate())
+                    .dosage(prescription.getDosage())
+                    .duration(prescription.getDuration())
+                    .medicalFinding(prescription.getMedicalFinding())
+                    .medicineName(prescription.getMedicineName())
+                    .build();
+            prescriptionModels.add(prescriptionModel);
+        }
+        return ResponseEntity.ok(prescriptionModels);
     }
 
 }
