@@ -28,7 +28,7 @@ public class Doctor {
     private String password;
     @Column(name = "email")
     private String emailId;
-    @Column(name = "status")
+    @Column(name = "is_available")
     private String isAvailable;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctor")
