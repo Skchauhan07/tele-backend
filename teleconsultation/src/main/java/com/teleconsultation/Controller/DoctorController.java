@@ -69,11 +69,11 @@ public class DoctorController {
         }
         System.out.println(pair.getFirst().getPatientName()  + " HERE IN START CONSUL CONTROLLER ");
         Doctor doctor = doctorService.getDoctorById(doctorId);
-        if(doctor.getIsAvailable().equals("NO")){
-            return -1;
-        }
+//        if(doctor.getIsAvailable().equals("NO")){
+//            return -1;
+//        }
         //set doctor availability
-        doctorService.updateIsAvailable(" NO ", doctorId);
+//        doctorService.updateIsAvailable(" NO ", doctorId);
         consultationService.startConsultation(doctor, pair);
         return pair.getSecond();
     }
