@@ -38,7 +38,7 @@ public class QueueServiceImpl implements QueueService {
     public Pair<Patient, Integer> getNextInPairQueue() {
         Pair<Patient, Integer> patientIntegerPair = pairQueue.poll();
         if(patientIntegerPair != null && patientIntegerPair.getFirst().getStatusQueue() == "YES"){
-            patientIntegerPair.getFirst().setStatusQueue("NO");
+            patientRepository.updateStatusQueue("NO", patientIntegerPair.getFirst().getPatientId());
             System.out.println(patientIntegerPair.getFirst().getPatientName() + " Popped from Queue");
             return patientIntegerPair;
         } else if (patientIntegerPair == null) {

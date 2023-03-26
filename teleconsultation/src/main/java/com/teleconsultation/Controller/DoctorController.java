@@ -64,7 +64,7 @@ public class DoctorController {
     public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
         Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
         Doctor doctor = doctorService.getDoctorById(doctorId);
-        if(doctor.getIsAvailable() == "NO"){
+        if(doctor.getIsAvailable().equals("NO")){
             return -1;
         }
         doctor.setIsAvailable("NO");
