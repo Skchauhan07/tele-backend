@@ -44,6 +44,7 @@ public class PatientController {
             return false;
         }
         patientService.updateStatusQueue("YES", patient.getPatientId());
+        patient = patientService.getPatientById(patientId);
         patientService.joinQueue(patient, roomId);
         return true;
     }
