@@ -31,7 +31,7 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public void leavePatientQueue(Patient patient) {
-        patient.setStatusQueue("NO");
+        patientRepository.updateStatusQueue("NO", patient.getPatientId());
     }
 
     @Override
