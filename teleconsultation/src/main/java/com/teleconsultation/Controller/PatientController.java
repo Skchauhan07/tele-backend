@@ -40,7 +40,7 @@ public class PatientController {
     public boolean joinQueue(@PathVariable Long patientId, @RequestParam("roomId") Integer roomId){
         //if patient already in queue then its status is yes
         Patient patient = patientService.getPatientById(patientId);
-        if(patient.getStatusQueue() == "YES"){
+        if(patient.getStatusQueue().equals("YES")){
             return false;
         }
         patientService.joinQueue(patient, roomId);

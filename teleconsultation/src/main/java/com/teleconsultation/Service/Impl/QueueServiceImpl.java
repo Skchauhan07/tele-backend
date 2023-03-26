@@ -23,7 +23,7 @@ public class QueueServiceImpl implements QueueService {
     @Autowired
     private ConsultationService consultationService;
     public void addPatientToQueue(Patient patient, Integer roomId) {
-        patient.setStatusQueue("YES");
+        patientRepository.updateStatusQueue("YES", patient.getPatientId());
         System.out.println(patient.getPatientName() + " Added to Queue");
         Pair<Patient, Integer> pair = Pair.of(patient, roomId);
         pairQueue.offer(pair);
