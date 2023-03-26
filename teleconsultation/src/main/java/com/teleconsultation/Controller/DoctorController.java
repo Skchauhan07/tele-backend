@@ -67,7 +67,8 @@ public class DoctorController {
         if(doctor.getIsAvailable().equals("NO")){
             return -1;
         }
-        doctor.setIsAvailable("NO");
+        //set doctor availability
+        doctorService.updateIsAvailable("NO", doctorId);
         consultationService.startConsultation(doctorId, pair);
         return pair.getSecond();
     }
