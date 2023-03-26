@@ -43,6 +43,7 @@ public class PatientController {
         if(patient.getStatusQueue().equals("YES")){
             return false;
         }
+        patientService.updateStatusQueue("YES", patient.getPatientId());
         patientService.joinQueue(patient, roomId);
         return true;
     }

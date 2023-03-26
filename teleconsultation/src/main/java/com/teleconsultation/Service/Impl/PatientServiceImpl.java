@@ -26,6 +26,11 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public void updateStatusQueue(String status, Long patientId) {
+        patientRepository.updateStatusQueue(status, patientId);
+    }
+
+    @Override
     public void joinQueue(Patient patient, Integer roomId) {
         queueService.addPatientToQueue(patient, roomId);
     }

@@ -23,10 +23,11 @@ public class QueueServiceImpl implements QueueService {
     @Autowired
     private ConsultationService consultationService;
     public void addPatientToQueue(Patient patient, Integer roomId) {
-        patientRepository.updateStatusQueue("YES", patient.getPatientId());
-        System.out.println(patient.getPatientName() + " Added to Queue");
+        patient.setStatusQueue("YES");
+        System.out.println(patient.getPatientName() + " Added to Queue " + patient.getStatusQueue());
         Pair<Patient, Integer> pair = Pair.of(patient, roomId);
         pairQueue.offer(pair);
+        System.out.println("Queue Size = " + pairQueue.size());
     }
 
     @Override
@@ -37,11 +38,13 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public Pair<Patient, Integer> getNextInPairQueue() {
         Pair<Patient, Integer> patientIntegerPair = pairQueue.poll();
-        if(patientIntegerPair != null && patientIntegerPair.getFirst().getStatusQueue() == "YES"){
+        if(patientIntegerPair != null && patientIntegerPair.getFirst().getStatusQueue().equals("YES")){
             patientRepository.updateStatusQueue("NO", patientIntegerPair.getFirst().getPatientId());
+            patientIntegerPair.getFirst().setStatusQueue("NO");
             System.out.println(patientIntegerPair.getFirst().getPatientName() + " Popped from Queue");
             return patientIntegerPair;
         } else if (patientIntegerPair == null) {
+            System.out.println("Patient Integer pair is NULL ");
             return null;
         }
         return getNextInPairQueue();
