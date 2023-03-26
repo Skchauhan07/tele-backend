@@ -64,7 +64,7 @@ public class DoctorController {
     public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
         Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
         if(pair == null){
-            System.out.println("Problem in Popping Patient");
+            System.out.println("Problem in Popping Patient ");
             return -1;
         }
         System.out.println(pair.getFirst().getPatientName()  + " HERE IN START CONSUL CONTROLLER ");
@@ -73,7 +73,7 @@ public class DoctorController {
             return -1;
         }
         //set doctor availability
-        doctorService.updateIsAvailable("NO", doctorId);
+        doctorService.updateIsAvailable(" NO ", doctorId);
         consultationService.startConsultation(doctor, pair);
         return pair.getSecond();
     }
