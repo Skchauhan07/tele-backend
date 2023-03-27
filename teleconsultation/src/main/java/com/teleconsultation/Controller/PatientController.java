@@ -35,6 +35,8 @@ public class PatientController {
     private AppointmentService appointmentService;
     @Autowired
     private FileService fileService;
+
+
     // Patient joins the Queue so set status = true.
     @PostMapping("/join-queue/{patientId}")
     public boolean joinQueue(@PathVariable Long patientId, @RequestParam("roomId") Integer roomId){
@@ -44,16 +46,22 @@ public class PatientController {
             return false;
         }
         patientService.updateStatusQueue("YES", patient.getPatientId());
-        patient = patientService.getPatientById(patientId);
+        patient.setStatusQueue("YES");
         patientService.joinQueue(patient, roomId);
         return true;
     }
+
+
+
 
     // get patient Name
     @GetMapping("/get-name/{patientId}")
     public String getPatientName(@PathVariable("patientId") Long patientId){
         return patientService.getPatientById(patientId).getPatientName();
     }
+
+
+
     @GetMapping("/get-patient/{patientId}")
     public ResponseEntity<PatientModel> getPatient(@PathVariable("patientId") Long patientId){
         Patient patient = patientService.getPatientById(patientId);

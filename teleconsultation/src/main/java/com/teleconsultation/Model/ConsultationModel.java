@@ -17,7 +17,7 @@ public class ConsultationModel {
     @Temporal(TemporalType.DATE)
     private Date date;
     @Temporal(TemporalType.TIME)
-    private String time;
+    private Date time;
     private Long doctorId;
     private Long patientId;
 }

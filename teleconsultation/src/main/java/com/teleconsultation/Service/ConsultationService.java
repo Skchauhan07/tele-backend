@@ -6,6 +6,10 @@ import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Model.ConsultationModel;
 import org.springframework.data.util.Pair;
 
+import java.util.List;
+
 public interface ConsultationService {
-    public void startConsultation(Doctor doctor, Pair<Patient, Integer> pair) throws Exception;
+    public void startConsultation(Doctor doctor, Patient patient) throws Exception;
+
+    List<Consultation> getHistory(Long doctorId);
 }
