@@ -1,10 +1,10 @@
-package com.teleconsultation.Service;
+package com.teleconsultation.Service.Impl;
 
 import com.teleconsultation.Entity.Doctor;
 import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Entity.Prescription;
 import com.teleconsultation.Repository.DoctorRepository;
-import com.teleconsultation.Service.Impl.DoctorService;
+import com.teleconsultation.Service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +15,12 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
     @Override
-    public boolean doctorLogin(String username, String password) {
-        return false;
+    public Long doctorLogin(String emailId, String password) {
+        Doctor doctor = doctorRepository.findDoctorByEmailIdAndPassword(emailId, password);
+        if(doctor != null){
+            return doctor.getDoctorId();
+        }
+        return -1L;
     }
 
     @Override
@@ -26,7 +30,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public void scheduleFollowUp(Patient patient) {
-
     }
 
     @Override
@@ -53,6 +56,11 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Doctor getDoctorById(Long doctorId) {
         return doctorRepository.findDoctorByDoctorId(doctorId);
+    }
+
+    @Override
+    public void updateIsAvailable(String no, Long doctorId) {
+        doctorRepository.updateStatusQueue(no, doctorId);
     }
 
 }

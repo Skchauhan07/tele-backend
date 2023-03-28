@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Data
@@ -16,7 +17,8 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long appointmentId;
-    private String date;
+    @Temporal(TemporalType.DATE)
+    private Date date;
     private String symptoms;
     private String description;
     @OneToOne(cascade=CascadeType.ALL)

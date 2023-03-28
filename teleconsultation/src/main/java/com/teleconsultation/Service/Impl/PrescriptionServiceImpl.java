@@ -1,14 +1,16 @@
-package com.teleconsultation.Service;
+package com.teleconsultation.Service.Impl;
 
 import com.teleconsultation.Entity.Doctor;
 import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Entity.Prescription;
 import com.teleconsultation.Repository.PrescriptionRepository;
-import com.teleconsultation.Service.Impl.DoctorService;
-import com.teleconsultation.Service.Impl.PatientService;
-import com.teleconsultation.Service.Impl.PrescriptionService;
+import com.teleconsultation.Service.DoctorService;
+import com.teleconsultation.Service.PatientService;
+import com.teleconsultation.Service.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PrescriptionServiceImpl implements PrescriptionService {
@@ -30,5 +32,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         Doctor doctor = doctorService.getDoctorById(doctorId);
         Patient patient = patientService.getPatientById(patientId);
         return prescriptionRepository.searchPrescriptionByDoctorAndPatient(doctor, patient);
+    }
+
+    @Override
+    public List<Prescription> searchByPatient(Long patientId) {
+        Patient patient = patientService.getPatientById(patientId);
+        if(patient == null) {
+            return null;
+        }
+        return prescriptionRepository.searchPrescriptionByPatient(patient);
     }
 }

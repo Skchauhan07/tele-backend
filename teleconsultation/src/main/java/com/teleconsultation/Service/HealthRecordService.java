@@ -1,4 +1,4 @@
-package com.teleconsultation.Service.Impl;
+package com.teleconsultation.Service;
 
 
 import com.teleconsultation.Entity.HealthRecord;

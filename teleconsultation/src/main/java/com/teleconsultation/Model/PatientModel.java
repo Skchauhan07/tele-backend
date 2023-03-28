@@ -16,5 +16,5 @@ public class PatientModel {
     private int age;
     private String gender;
     private String medicalHistory;
-    private boolean statusQueue;
+    private String statusQueue;
 }

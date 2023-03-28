@@ -1,16 +1,15 @@
 package com.teleconsultation.Controller;
 
-import com.teleconsultation.Entity.Consultation;
-import com.teleconsultation.Entity.Doctor;
-import com.teleconsultation.Entity.HealthRecord;
-import com.teleconsultation.Entity.Prescription;
+import com.teleconsultation.Entity.*;
 import com.teleconsultation.Model.ConsultationModel;
 import com.teleconsultation.Model.HealthRecordModel;
 import com.teleconsultation.Model.PrescriptionModel;
 import com.teleconsultation.Repository.DoctorRepository;
+import com.teleconsultation.Service.*;
 import com.teleconsultation.Service.Impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,9 +42,9 @@ public class DoctorController {
 
     @GetMapping("/login")
     public boolean login(@RequestParam String username, @RequestParam String password){
-        if(doctorService.doctorLogin(username, password)){
+        Long id = doctorService.doctorLogin(username, password);
+        if(id != -1L)
             return true;
-        }
         return false;
     }
 
@@ -53,19 +53,54 @@ public class DoctorController {
     public Doctor addDoctor(@Valid @RequestBody Doctor doctor){
         Doctor doctor1 = Doctor.builder()
                 .doctorName(doctor.getDoctorName())
-                .phoneNumber(doctor.getPhoneNumber())
+                .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
                 .password(doctor.getPassword())
+                .isAvailable("YES")
                 .build();
         return doctorService.addDoctor(doctor1);
     }
 
-    @GetMapping("/consultation/{doctorId}")
-    public int startConsultation(@PathVariable("doctorId") Long doctorId){
-        Integer roomId = consultationService.startConsultation(doctorId);
-        return roomId;
+    @PostMapping("/consultation/{doctorId}")
+    public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
+        Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
+        if(pair == null){
+            System.out.println("Problem in Popping Patient in startConsultation(Doctor Controller)");
+            return -1;
+        }
+        Doctor doctor = doctorService.getDoctorById(doctorId);
+        if(doctor.getIsAvailable().equals("NO")){
+            return -1;
+        }
+//        set doctor availability
+        doctor.setIsAvailable("NO");
+        doctorService.updateIsAvailable("NO", doctorId);
+        Patient patient = patientService.getPatientById(pair.getFirst().getPatientId());
+        consultationService.startConsultation(doctor, patient);
+        return pair.getSecond();
     }
 
+    @GetMapping("/get-history/{doctorId}")
+    public ResponseEntity<List<ConsultationModel>> getHistory(@PathVariable("doctorId") Long doctorId){
+        List<Consultation> consultations = consultationService.getHistory(doctorId);
+        List<ConsultationModel> consultationModels = new ArrayList<>();
+        if(consultations == null){
+            return ResponseEntity.notFound().build();
+        }
+        for(Consultation consultation : consultations){
+            ConsultationModel consultationModel = ConsultationModel.builder()
+                    .date(consultation.getDate())
+                    .time(consultation.getTime())
+                    .doctorId(consultation.getDoctor().getDoctorId())
+                    .patientId(consultation.getPatient().getPatientId())
+                    .build();
+            consultationModels.add(consultationModel);
+        }
+        return ResponseEntity.ok(consultationModels);
+    }
+
+
+    // Use Doctor Model Here
     @GetMapping("/view")
     public List<Doctor> viewDoctor(){
         return doctorService.viewDoctor();
