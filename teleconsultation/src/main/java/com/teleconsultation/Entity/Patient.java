@@ -24,6 +24,8 @@ public class Patient {
     private String gender;
     private String medicalHistory;
     private String statusQueue;
+    @Column(name = "role")
+    private String role;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "patient")
     private List<Prescription> prescription;
 

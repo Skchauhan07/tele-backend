@@ -2,17 +2,14 @@ package com.teleconsultation.Controller;
 
 import com.teleconsultation.Model.JwtRequest;
 import com.teleconsultation.Model.JwtResponse;
-import com.teleconsultation.Service.UserService;
+import com.teleconsultation.Service.Impl.UserService;
 import com.teleconsultation.Utility.JWTUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class HomeController {
@@ -30,7 +27,7 @@ public class HomeController {
     public String home() {
         return "Welcome to Daily Code Buffer!!";
     }
-
+//@RequestBody JwtRequest jwtRequest
     @PostMapping("/authenticate")
     public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception{
 
@@ -47,7 +44,7 @@ public class HomeController {
 
         final UserDetails userDetails
                 = userService.loadUserByUsername(jwtRequest.getUsername());
-
+        System.out.println(userDetails.getUsername());
         final String token =
                 jwtUtility.generateToken(userDetails);
 

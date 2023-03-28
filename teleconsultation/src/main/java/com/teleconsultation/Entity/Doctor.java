@@ -30,6 +30,8 @@ public class Doctor {
     private String emailId;
     @Column(name = "is_available")
     private String isAvailable;
+    @Column(name = "role")
+    private String role;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctor")
     private List<Prescription> prescriptions;
