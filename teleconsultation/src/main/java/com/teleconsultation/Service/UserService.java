@@ -28,7 +28,7 @@ public class UserService implements UserDetailsService {
         // Check if user is a doctor
         Doctor doctor = doctorRepository.findDoctorByPhoneNumber(phoneNumber);
         if (doctor != null) {
-            return new User(doctor.getPhoneNumber(), doctor.getPhoneNumber(),
+            return new User(doctor.getContact(), doctor.getContact(),
                     AuthorityUtils.createAuthorityList("ROLE_DOCTOR"));
         }
 
