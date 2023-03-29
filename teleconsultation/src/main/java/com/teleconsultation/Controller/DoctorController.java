@@ -2,6 +2,7 @@ package com.teleconsultation.Controller;
 
 import com.teleconsultation.Entity.*;
 import com.teleconsultation.Model.ConsultationModel;
+import com.teleconsultation.Model.DoctorModel;
 import com.teleconsultation.Model.HealthRecordModel;
 import com.teleconsultation.Model.PrescriptionModel;
 import com.teleconsultation.Repository.DoctorRepository;
@@ -55,7 +56,8 @@ public class DoctorController {
                 .doctorName(doctor.getDoctorName())
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
-                .password(doctor.getPassword())
+                .specialization(doctor.getSpecialization())
+                .age(doctor.getAge())
                 .isAvailable("YES")
                 .build();
         return doctorService.addDoctor(doctor1);
@@ -109,6 +111,19 @@ public class DoctorController {
     @GetMapping("/get-name/{doctorId}")
     public String getDoctorName(@PathVariable("doctorId") Long doctorId){
         return doctorService.getDoctorById(doctorId).getDoctorName();
+    }
+    @GetMapping("/doctor-by-contact/{phoneNumber}")
+    public ResponseEntity<DoctorModel> getDoctorName(@PathVariable("phoneNumber") String phoneNumber){
+        Doctor doctor = doctorService.getDoctorByContact(phoneNumber);
+        if(doctor == null){
+            return ResponseEntity.notFound().build();
+        }
+        DoctorModel doctorModel = DoctorModel.builder()
+                .doctorName(doctor.getDoctorName())
+                .contact(doctor.getContact())
+                .emailId(doctor.getEmailId())
+                .build();
+        return ResponseEntity.ok(doctorModel);
     }
     //view Health Record of a particular patient
     @GetMapping("/healthrecord/{patientId}")

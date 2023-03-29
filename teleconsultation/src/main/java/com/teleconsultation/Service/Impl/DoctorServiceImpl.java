@@ -24,6 +24,11 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public Doctor getDoctorByContact(String contact) {
+        return doctorRepository.findByContact(contact);
+    }
+
+    @Override
     public Doctor addDoctor(Doctor doctor) {
         return doctorRepository.save(doctor);
     }

@@ -24,8 +24,10 @@ public class Doctor {
     private String doctorName;
     @Column(name = "contact")
     private String contact;
-    @Column(name = "password")
-    private String password;
+    @Column(name = "specialization")
+    private String specialization;
+    @Column(name = "age")
+    private String age;
     @Column(name = "email")
     private String emailId;
     @Column(name = "is_available")
