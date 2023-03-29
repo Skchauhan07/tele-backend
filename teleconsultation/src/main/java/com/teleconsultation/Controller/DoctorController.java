@@ -69,12 +69,12 @@ public class DoctorController {
             return -1;
         }
         Doctor doctor = doctorService.getDoctorById(doctorId);
-        if(doctor.getIsAvailable().equals("NO")){
-            return -1;
-        }
+//        if(doctor.getIsAvailable().equals("NO")){
+//            return -1;
+//        }
 //        set doctor availability
-        doctor.setIsAvailable("NO");
-        doctorService.updateIsAvailable("NO", doctorId);
+//        doctor.setIsAvailable("NO");
+//        doctorService.updateIsAvailable("NO", doctorId);
         Patient patient = patientService.getPatientById(pair.getFirst().getPatientId());
         consultationService.startConsultation(doctor, patient);
         return pair.getSecond();
