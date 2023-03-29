@@ -15,17 +15,8 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
     @Override
-    public Long doctorLogin(String emailId, String password) {
-        Doctor doctor = doctorRepository.findDoctorByEmailIdAndPassword(emailId, password);
-        if(doctor != null){
-            return doctor.getDoctorId();
-        }
-        return -1L;
-    }
-
-    @Override
     public Doctor getDoctorByContact(String contact) {
-        return doctorRepository.findByContact(contact);
+        return doctorRepository.findDoctorByContact(contact);
     }
 
     @Override

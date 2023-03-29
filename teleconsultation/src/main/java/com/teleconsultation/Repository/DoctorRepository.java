@@ -12,12 +12,11 @@ import java.util.List;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-    Doctor findDoctorByEmailIdAndPassword(String emailId, String password);
     Doctor findDoctorByDoctorId(Long id);
     @Transactional
     @Modifying
     @Query("update Doctor p set p.isAvailable = ?1 where p.doctorId = ?2")
     int updateStatusQueue(@NonNull String isAvailable, @NonNull Long doctorId);
 
-    Doctor findByContact(String contact);
+    Doctor findDoctorByContact(String contact);
 }

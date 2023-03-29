@@ -40,15 +40,6 @@ public class DoctorController {
     private ConsultationService consultationService;
 //    @Autowired
 //    private BCryptPasswordEncoder passwordEncoder;
-
-    @GetMapping("/login")
-    public boolean login(@RequestParam String username, @RequestParam String password){
-        Long id = doctorService.doctorLogin(username, password);
-        if(id != -1L)
-            return true;
-        return false;
-    }
-
     //after adding doctor initially he is not in queue. so statusQueue = false
     @PostMapping("/add")
     public Doctor addDoctor(@Valid @RequestBody Doctor doctor){

@@ -9,7 +9,6 @@ import java.util.Optional;
 
 
 public interface DoctorService {
-    public Long doctorLogin(String emailId, String password);
     Doctor getDoctorByContact(String contact);
     public Doctor addDoctor(Doctor doctor);
     public void scheduleFollowUp(Patient patient);
