@@ -122,6 +122,8 @@ public class DoctorController {
                 .doctorName(doctor.getDoctorName())
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
+                .age(doctor.getAge())
+                .specialization(doctor.getSpecialization())
                 .build();
         return ResponseEntity.ok(doctorModel);
     }

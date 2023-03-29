@@ -15,7 +15,8 @@ import javax.validation.constraints.NotBlank;
 public class DoctorModel {
     private String doctorName;
     private String contact;
-    private String password;
+    private String specialization;
+    private String age;
     private String emailId;
     private boolean statusQueue;
 }
