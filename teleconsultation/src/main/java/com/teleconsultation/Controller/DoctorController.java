@@ -161,4 +161,9 @@ public class DoctorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
     }
 
+    @GetMapping("/get-queue-size")
+    public ResponseEntity<Integer> getQueueSize(){
+        return ResponseEntity.ok(queueService.getSize());
+    }
+
 }

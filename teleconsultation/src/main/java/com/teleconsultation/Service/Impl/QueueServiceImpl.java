@@ -7,6 +7,7 @@ import com.teleconsultation.Service.ConsultationService;
 import com.teleconsultation.Service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -47,5 +48,10 @@ public class QueueServiceImpl implements QueueService {
             return null;
         }
         return getNextInPairQueue();
+    }
+
+    @Override
+    public Integer getSize() {
+        return pairQueue.size();
     }
 }
