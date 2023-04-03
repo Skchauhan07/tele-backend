@@ -40,7 +40,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         if(patient == null) {
             return null;
         }
-        return prescriptionRepository.searchPrescriptionByPatientOrderByDate(patient);
+        return prescriptionRepository.searchPrescriptionByPatientOrderByDateDesc(patient);
     }
 
     @Override
