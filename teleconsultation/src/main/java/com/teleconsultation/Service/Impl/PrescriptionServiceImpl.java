@@ -45,6 +45,6 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     @Override
     public List<Prescription> searchByDoctor(Long doctorId) {
-        return prescriptionRepository.findPrescriptionByDoctor(doctorService.getDoctorById(doctorId));
+        return prescriptionRepository.searchPrescriptionByDoctorOrderByDateDesc(doctorService.getDoctorById(doctorId));
     }
 }
