@@ -47,6 +47,7 @@ public class DoctorController {
                 .doctorName(doctor.getDoctorName())
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
+                .gender(doctor.getGender())
                 .specialization(doctor.getSpecialization())
                 .age(doctor.getAge())
                 .isAvailable("YES")
@@ -159,6 +160,25 @@ public class DoctorController {
                 .build();
         Prescription createdPrescription = prescriptionService.add(prescription);
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
+    }
+    @GetMapping("/prescription-list/{doctorId}")
+    public ResponseEntity<List<PrescriptionModel>> getPrescriptionsList(@PathVariable("doctorId") Long doctorId){
+        List<Prescription> prescriptions = prescriptionService.searchByDoctor(doctorId);
+        if(prescriptions == null){
+            return ResponseEntity.notFound().build();
+        }
+        List<PrescriptionModel> prescriptionModels = new ArrayList<>();
+        for(Prescription prescription : prescriptions){
+            PrescriptionModel prescriptionModel = PrescriptionModel.builder()
+                    .date(prescription.getDate())
+                    .dosage(prescription.getDosage())
+                    .duration(prescription.getDuration())
+                    .medicineName(prescription.getMedicineName())
+                    .medicalFinding(prescription.getMedicalFinding())
+                    .build();
+            prescriptionModels.add(prescriptionModel);
+        }
+        return ResponseEntity.ok(prescriptionModels);
     }
 
     @GetMapping("/get-queue-size")

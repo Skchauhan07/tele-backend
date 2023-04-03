@@ -12,4 +12,6 @@ import java.util.List;
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
     Prescription searchPrescriptionByDoctorAndPatient(Doctor doctor, Patient patient);
     List<Prescription> searchPrescriptionByPatient(Patient patient);
+    List<Prescription> findPrescriptionByDoctor(Doctor doctor);
+    List<Prescription> searchPrescriptionByPatientOrderByDate(Patient patient);
 }

@@ -40,6 +40,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         if(patient == null) {
             return null;
         }
-        return prescriptionRepository.searchPrescriptionByPatient(patient);
+        return prescriptionRepository.searchPrescriptionByPatientOrderByDate(patient);
+    }
+
+    @Override
+    public List<Prescription> searchByDoctor(Long doctorId) {
+        return prescriptionRepository.findPrescriptionByDoctor(doctorService.getDoctorById(doctorId));
     }
 }
