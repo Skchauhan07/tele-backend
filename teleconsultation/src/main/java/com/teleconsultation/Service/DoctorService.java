@@ -3,6 +3,7 @@ package com.teleconsultation.Service;
 import com.teleconsultation.Entity.Doctor;
 import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Entity.Prescription;
+import com.teleconsultation.Model.DoctorModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface DoctorService {
     Doctor getDoctorById(Long doctorId);
 
     void updateIsAvailable(String no, Long doctorId);
+
+    void updateDoctorAttributes(Doctor doctor, DoctorModel doctorModel);
 }

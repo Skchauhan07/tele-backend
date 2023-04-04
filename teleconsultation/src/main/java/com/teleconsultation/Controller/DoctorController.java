@@ -1,5 +1,7 @@
 package com.teleconsultation.Controller;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teleconsultation.Entity.*;
 import com.teleconsultation.Model.ConsultationModel;
 import com.teleconsultation.Model.DoctorModel;
@@ -16,10 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.DataInput;
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -55,6 +60,15 @@ public class DoctorController {
         return doctorService.addDoctor(doctor1);
     }
 
+    @PatchMapping("/update-doctor/{id}")
+    public ResponseEntity<String> updateDoctor(@PathVariable("id") Long id, @RequestBody DoctorModel doctorModel) {
+        Doctor doctor = doctorService.getDoctorById(id);
+        if(doctor == null){
+            return ResponseEntity.notFound().build();
+        }
+        doctorService.updateDoctorAttributes(doctor, doctorModel);
+        return ResponseEntity.ok("Updated Doctor");
+    }
     @PostMapping("/consultation/{doctorId}")
     public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
         Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
@@ -115,6 +129,7 @@ public class DoctorController {
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
                 .age(doctor.getAge())
+                .gender(doctor.getGender())
                 .specialization(doctor.getSpecialization())
                 .build();
         return ResponseEntity.ok(doctorModel);

@@ -3,6 +3,7 @@ package com.teleconsultation.Service.Impl;
 import com.teleconsultation.Entity.Doctor;
 import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Entity.Prescription;
+import com.teleconsultation.Model.DoctorModel;
 import com.teleconsultation.Repository.DoctorRepository;
 import com.teleconsultation.Service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,32 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public void updateIsAvailable(String no, Long doctorId) {
         doctorRepository.updateStatusQueue(no, doctorId);
+    }
+
+    @Override
+    public void updateDoctorAttributes(Doctor doctor, DoctorModel doctorModel) {
+        if (doctorModel.getDoctorName() != null) {
+            doctor.setDoctorName(doctorModel.getDoctorName());
+        }
+        if (doctorModel.getContact() != null) {
+            doctor.setContact(doctorModel.getContact());
+        }
+        if (doctorModel.getSpecialization() != null) {
+            doctor.setSpecialization(doctorModel.getSpecialization());
+        }
+        if (doctorModel.getGender() != null) {
+            doctor.setGender(doctorModel.getGender());
+        }
+        if (doctorModel.getAge() != null) {
+            doctor.setAge(doctorModel.getAge());
+        }
+        if (doctorModel.getEmailId() != null) {
+            doctor.setEmailId(doctorModel.getEmailId());
+        }
+        if (doctorModel.getIsAvailable() != null) {
+            doctor.setIsAvailable(doctorModel.getIsAvailable());
+        }
+        doctorRepository.updateDoctor(doctor.getDoctorName(), doctor.getContact(), doctor.getSpecialization(), doctor.getGender(), doctor.getAge(), doctor.getEmailId(), doctor.getIsAvailable(), doctor.getDoctorId());
     }
 
 }
