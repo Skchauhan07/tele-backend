@@ -21,4 +21,6 @@ public interface DoctorService {
     Doctor getDoctorById(Long doctorId);
 
     void updateIsAvailable(String no, Long doctorId);
+
+    Doctor findDoctorByContact(String phoneNumber);
 }

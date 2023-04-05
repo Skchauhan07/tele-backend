@@ -63,4 +63,9 @@ public class DoctorServiceImpl implements DoctorService {
         doctorRepository.updateStatusQueue(no, doctorId);
     }
 
+    @Override
+    public Doctor findDoctorByContact(String phoneNumber) {
+        return doctorRepository.findDoctorByContact(phoneNumber);
+    }
+
 }

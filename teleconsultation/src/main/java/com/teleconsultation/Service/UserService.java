@@ -18,28 +18,26 @@ import java.util.List;
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
-    private PatientRepository patientRepository;
+    private PatientService patientService;
 
     @Autowired
-    private DoctorRepository doctorRepository;
+    private DoctorService doctorService;
 
     @Override
     public UserDetails loadUserByUsername(String phoneNumber){
         // Check if user is a doctor
-        Doctor doctor = doctorRepository.findDoctorByPhoneNumber(phoneNumber);
+        Doctor doctor = doctorService.findDoctorByContact(phoneNumber);
         if (doctor != null) {
             return new User(doctor.getContact(), doctor.getContact(),
                     AuthorityUtils.createAuthorityList("ROLE_DOCTOR"));
         }
 
         // Check if user is a patient
-        List<Patient> patients = patientRepository.findPatientByPhoneNumber(phoneNumber);
+        List<Patient> patients = patientService.getPatientListForPhoneNumber(phoneNumber);
         if (patients != null) {
             return new User(patients.get(0).getPhoneNumber(), patients.get(0).getPhoneNumber(),
                     AuthorityUtils.createAuthorityList("ROLE_PATIENT"));
         }
-
-        return new User(phoneNumber, phoneNumber,
-                AuthorityUtils.createAuthorityList("ROLE_PATIENT"));
+        throw new UsernameNotFoundException("User Not Found");
     }
 }
