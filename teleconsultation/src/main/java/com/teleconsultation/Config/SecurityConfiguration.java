@@ -1,7 +1,7 @@
 package com.teleconsultation.Config;
 
 import com.teleconsultation.Filter.JwtFilter;
-import com.teleconsultation.Service.Impl.UserService;
+import com.teleconsultation.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,32 +37,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf()
-//                .disable()
-//                .authorizeRequests()
-//                .antMatchers("/authenticate")
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         http.csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/authenticate/**")
+                .antMatchers("/authenticate")
                 .permitAll()
-                .antMatchers("/patient/**")
-                .hasRole("PATIENT")
-                .antMatchers("/doctor/**")
-                .hasRole("DOCTOR")
                 .anyRequest()
                 .authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 }
 

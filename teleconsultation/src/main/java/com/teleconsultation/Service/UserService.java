@@ -1,4 +1,4 @@
-package com.teleconsultation.Service.Impl;
+package com.teleconsultation.Service;
 
 import com.teleconsultation.Entity.Doctor;
 import com.teleconsultation.Entity.Patient;
@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String phoneNumber){
         // Check if user is a doctor
-        Doctor doctor = doctorRepository.findDoctorByContact(phoneNumber);
+        Doctor doctor = doctorRepository.findDoctorByPhoneNumber(phoneNumber);
         if (doctor != null) {
             return new User(doctor.getContact(), doctor.getContact(),
                     AuthorityUtils.createAuthorityList("ROLE_DOCTOR"));

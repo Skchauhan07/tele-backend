@@ -19,5 +19,5 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     @Query("update Doctor p set p.isAvailable = ?1 where p.doctorId = ?2")
     int updateStatusQueue(@NonNull String isAvailable, @NonNull Long doctorId);
 
-    Doctor findDoctorByContact(String phoneNumber);
+    Doctor findDoctorByPhoneNumber(String phoneNumber);
 }
