@@ -88,9 +88,10 @@ public class DoctorController {
         return pair.getSecond();
     }
 
-    @GetMapping("/get-history/{doctorId}")
-    public ResponseEntity<List<ConsultationModel>> getHistory(@PathVariable("doctorId") Long doctorId){
-        List<Consultation> consultations = consultationService.getHistory(doctorId);
+    @GetMapping("/get-history/{phoneNumber}")
+    public ResponseEntity<List<ConsultationModel>> getHistory(@PathVariable("phoneNumber") String phoneNumber){
+        Doctor doctor = doctorService.getDoctorByContact(phoneNumber);
+        List<Consultation> consultations = consultationService.getHistory(doctor.getDoctorId());
         List<ConsultationModel> consultationModels = new ArrayList<>();
         if(consultations == null){
             return ResponseEntity.notFound().build();
@@ -101,6 +102,7 @@ public class DoctorController {
                     .time(consultation.getTime())
                     .doctorId(consultation.getDoctor().getDoctorId())
                     .patientId(consultation.getPatient().getPatientId())
+                    .patientName(patientService.getPatientById(consultation.getPatient().getPatientId()).getPatientName())
                     .build();
             consultationModels.add(consultationModel);
         }

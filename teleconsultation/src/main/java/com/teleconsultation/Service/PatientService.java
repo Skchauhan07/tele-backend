@@ -11,7 +11,6 @@ public interface PatientService {
     void joinQueue(Patient patient, Integer roomId);
 
     Patient getPatientById(Long patientId);
-
     Patient addPatient(Patient patient);
     List<Patient> getPatientListForPhoneNumber(String phoneNumber);
 }
