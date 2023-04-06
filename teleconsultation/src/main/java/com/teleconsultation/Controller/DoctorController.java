@@ -48,6 +48,18 @@ public class DoctorController {
         return false;
     }
 
+    @GetMapping("/role")
+    public String getRole(@RequestParam String phoneNumber){
+        String role = "";
+        try{
+            role = doctorService.findDoctorByContact(phoneNumber).getRole();
+        }
+        catch (Exception e){
+            return "Not Found";
+        }
+        return role;
+    }
+
     //after adding doctor initially he is not in queue. so statusQueue = false
     @PostMapping("/add")
     public Doctor addDoctor(@Valid @RequestBody Doctor doctor){
@@ -57,6 +69,7 @@ public class DoctorController {
                 .emailId(doctor.getEmailId())
                 .password(doctor.getPassword())
                 .isAvailable("YES")
+                .role("ROLE_DOCTOR")
                 .build();
         return doctorService.addDoctor(doctor1);
     }

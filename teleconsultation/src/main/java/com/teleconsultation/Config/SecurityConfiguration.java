@@ -1,7 +1,8 @@
 package com.teleconsultation.Config;
 
 import com.teleconsultation.Filter.JwtFilter;
-import com.teleconsultation.Service.Impl.UserService;
+
+import com.teleconsultation.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -51,7 +51,17 @@ public class PatientController {
         return true;
     }
 
-
+    @GetMapping("/role")
+    public String getRole(@RequestParam String phoneNumber){
+        String role = "";
+        try{
+            role = patientService.getPatientListForPhoneNumber(phoneNumber).get(0).getRole();
+        }
+        catch (Exception e){
+            return "Not Found";
+        }
+        return role;
+    }
 
 
     // get patient Name
@@ -79,11 +89,7 @@ public class PatientController {
     }
 
     // add patient
-    @PostMapping("/add")
-    public Patient addPatient(@RequestBody Patient patient){
-        patient.setStatusQueue("NO");
-        return patientService.addPatient(patient);
-    }
+
 
     // existing phone number ka patients list
     @GetMapping("/patient-list/phone-number")
