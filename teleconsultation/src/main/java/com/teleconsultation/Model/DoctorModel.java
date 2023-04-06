@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctorModel {
+    private Long doctorId;
     private String doctorName;
     private String contact;
     private String specialization;

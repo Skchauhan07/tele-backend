@@ -135,6 +135,7 @@ public class DoctorController {
             return ResponseEntity.notFound().build();
         }
         DoctorModel doctorModel = DoctorModel.builder()
+                .doctorId(doctor.getDoctorId())
                 .doctorName(doctor.getDoctorName())
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
