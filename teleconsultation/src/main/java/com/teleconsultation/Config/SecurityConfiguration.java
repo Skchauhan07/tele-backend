@@ -12,8 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
+@CrossOrigin(origins = "*")
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
@@ -48,6 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 //                .sessionManagement()
 //                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.cors();
         http.csrf()
                 .disable()
                 .authorizeRequests()
