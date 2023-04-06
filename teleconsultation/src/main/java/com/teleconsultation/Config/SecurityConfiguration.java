@@ -1,7 +1,7 @@
 package com.teleconsultation.Config;
 
 import com.teleconsultation.Filter.JwtFilter;
-import com.teleconsultation.Service.UserService;
+import com.teleconsultation.Service.Impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
+@CrossOrigin(origins = "*")
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
@@ -37,16 +39,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+//        http.csrf()
+//                .disable()
+//                .authorizeRequests()
+//                .antMatchers("/authenticate")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.cors();
+        http.csrf()
+                .disable()
                 .authorizeRequests()
-                .antMatchers("/authenticate").permitAll()
-                .antMatchers("/doctor/**").hasRole("DOCTOR")
-                .antMatchers("/patient/**").hasRole("PATIENT")
-                .anyRequest().authenticated()
+                .antMatchers("/authenticate/**")
+                .permitAll()
+                .antMatchers("/patient/**")
+                .hasRole("PATIENT")
+                .antMatchers("/doctor/**")
+                .hasRole("DOCTOR")
+                .anyRequest()
+                .authenticated()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
     }
 }
 
