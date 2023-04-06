@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.Queue;
 
 
-public interface QueueService {
+public interface QueueService
+{
     public void addPatientToQueue(Patient patient, Integer roomId);
     public void leavePatientQueue(Patient patient);
     public Pair<Patient, Integer> getNextInPairQueue();
-
+    Integer getSize();
 }

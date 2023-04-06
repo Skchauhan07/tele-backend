@@ -13,6 +13,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.teleconsultation.Model.DoctorModel;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -40,26 +41,6 @@ public class DoctorController {
 //    @Autowired
 //    private BCryptPasswordEncoder passwordEncoder;
 
-    @GetMapping("/login")
-    public boolean login(@RequestParam String username, @RequestParam String password){
-        Long id = doctorService.doctorLogin(username, password);
-        if(id != -1L)
-            return true;
-        return false;
-    }
-
-    @GetMapping("/role")
-    public String getRole(@RequestParam String phoneNumber){
-        String role = "";
-        try{
-            role = doctorService.findDoctorByContact(phoneNumber).getRole();
-        }
-        catch (Exception e){
-            return "Not Found";
-        }
-        return role;
-    }
-
     //after adding doctor initially he is not in queue. so statusQueue = false
     @PostMapping("/add")
     public Doctor addDoctor(@Valid @RequestBody Doctor doctor){
@@ -67,13 +48,35 @@ public class DoctorController {
                 .doctorName(doctor.getDoctorName())
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
-                .password(doctor.getPassword())
+                .gender(doctor.getGender())
+                .specialization(doctor.getSpecialization())
+                .age(doctor.getAge())
                 .isAvailable("YES")
                 .role("ROLE_DOCTOR")
                 .build();
         return doctorService.addDoctor(doctor1);
     }
 
+    @GetMapping("/role")
+    public String getRole(@RequestParam String phoneNumber){
+        String role = "";
+        try{
+            role = doctorService.getDoctorByContact(phoneNumber).getRole();
+        }
+        catch (Exception e){
+            return "Not Found";
+        }
+        return role;
+    }
+    @PatchMapping("/update-doctor/{id}")
+    public ResponseEntity<String> updateDoctor(@PathVariable("id") Long id, @RequestBody DoctorModel doctorModel) {
+        Doctor doctor = doctorService.getDoctorById(id);
+        if(doctor == null){
+            return ResponseEntity.notFound().build();
+        }
+        doctorService.updateDoctorAttributes(doctor, doctorModel);
+        return ResponseEntity.ok("Updated Doctor");
+    }
     @PostMapping("/consultation/{doctorId}")
     public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
         Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
@@ -82,20 +85,21 @@ public class DoctorController {
             return -1;
         }
         Doctor doctor = doctorService.getDoctorById(doctorId);
-        if(doctor.getIsAvailable().equals("NO")){
-            return -1;
-        }
+//        if(doctor.getIsAvailable().equals("NO")){
+//            return -1;
+//        }
 //        set doctor availability
-        doctor.setIsAvailable("NO");
-        doctorService.updateIsAvailable("NO", doctorId);
+//        doctor.setIsAvailable("NO");
+//        doctorService.updateIsAvailable("NO", doctorId);
         Patient patient = patientService.getPatientById(pair.getFirst().getPatientId());
         consultationService.startConsultation(doctor, patient);
         return pair.getSecond();
     }
 
-    @GetMapping("/get-history/{doctorId}")
-    public ResponseEntity<List<ConsultationModel>> getHistory(@PathVariable("doctorId") Long doctorId){
-        List<Consultation> consultations = consultationService.getHistory(doctorId);
+    @GetMapping("/get-history/{phoneNumber}")
+    public ResponseEntity<List<ConsultationModel>> getHistory(@PathVariable("phoneNumber") String phoneNumber){
+        Doctor doctor = doctorService.getDoctorByContact(phoneNumber);
+        List<Consultation> consultations = consultationService.getHistory(doctor.getDoctorId());
         List<ConsultationModel> consultationModels = new ArrayList<>();
         if(consultations == null){
             return ResponseEntity.notFound().build();
@@ -106,6 +110,7 @@ public class DoctorController {
                     .time(consultation.getTime())
                     .doctorId(consultation.getDoctor().getDoctorId())
                     .patientId(consultation.getPatient().getPatientId())
+                    .patientName(patientService.getPatientById(consultation.getPatient().getPatientId()).getPatientName())
                     .build();
             consultationModels.add(consultationModel);
         }
@@ -122,6 +127,22 @@ public class DoctorController {
     @GetMapping("/get-name/{doctorId}")
     public String getDoctorName(@PathVariable("doctorId") Long doctorId){
         return doctorService.getDoctorById(doctorId).getDoctorName();
+    }
+    @GetMapping("/doctor-by-contact/{phoneNumber}")
+    public ResponseEntity<DoctorModel> getDoctorName(@PathVariable("phoneNumber") String phoneNumber){
+        Doctor doctor = doctorService.getDoctorByContact(phoneNumber);
+        if(doctor == null){
+            return ResponseEntity.notFound().build();
+        }
+        DoctorModel doctorModel = DoctorModel.builder()
+                .doctorName(doctor.getDoctorName())
+                .contact(doctor.getContact())
+                .emailId(doctor.getEmailId())
+                .age(doctor.getAge())
+                .gender(doctor.getGender())
+                .specialization(doctor.getSpecialization())
+                .build();
+        return ResponseEntity.ok(doctorModel);
     }
     //view Health Record of a particular patient
     @GetMapping("/healthrecord/{patientId}")
@@ -164,6 +185,30 @@ public class DoctorController {
                 .build();
         Prescription createdPrescription = prescriptionService.add(prescription);
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
+    }
+    @GetMapping("/prescription-list/{doctorId}")
+    public ResponseEntity<List<PrescriptionModel>> getPrescriptionsList(@PathVariable("doctorId") Long doctorId){
+        List<Prescription> prescriptions = prescriptionService.searchByDoctor(doctorId);
+        if(prescriptions == null){
+            return ResponseEntity.notFound().build();
+        }
+        List<PrescriptionModel> prescriptionModels = new ArrayList<>();
+        for(Prescription prescription : prescriptions){
+            PrescriptionModel prescriptionModel = PrescriptionModel.builder()
+                    .date(prescription.getDate())
+                    .dosage(prescription.getDosage())
+                    .duration(prescription.getDuration())
+                    .medicineName(prescription.getMedicineName())
+                    .medicalFinding(prescription.getMedicalFinding())
+                    .build();
+            prescriptionModels.add(prescriptionModel);
+        }
+        return ResponseEntity.ok(prescriptionModels);
+    }
+
+    @GetMapping("/get-queue-size")
+    public ResponseEntity<Integer> getQueueSize(){
+        return ResponseEntity.ok(queueService.getSize());
     }
 
 }

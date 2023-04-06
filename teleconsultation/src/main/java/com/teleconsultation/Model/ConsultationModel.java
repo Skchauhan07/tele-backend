@@ -20,4 +20,5 @@ public class ConsultationModel {
     private Date time;
     private Long doctorId;
     private Long patientId;
+    private String patientName;
 }
