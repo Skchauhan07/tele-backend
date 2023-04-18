@@ -16,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 public class HomeController {
@@ -60,6 +62,10 @@ public class HomeController {
 
     @PostMapping("/authenticate/add")
     public ResponseEntity<PatientModel> addPatient(@RequestBody PatientModel patientModel){
+        List<Patient> patients =  patientService.getPatientListForPhoneNumber(patientModel.getPhoneNumber());
+        if(patients == null){
+            return ResponseEntity.badRequest().build();
+        }
         Patient patient = Patient.builder()
                 .patientName(patientModel.getPatientName())
                 .age(patientModel.getAge())

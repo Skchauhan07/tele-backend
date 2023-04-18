@@ -15,6 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class PrescriptionModel {
+    private Long prescriptionId;
     @Temporal(TemporalType.DATE)
     private Date date;
     private String medicalFinding;

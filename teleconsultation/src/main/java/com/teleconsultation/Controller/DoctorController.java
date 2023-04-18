@@ -79,12 +79,13 @@ public class DoctorController {
     }
     @PostMapping("/consultation/{doctorId}")
     public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
-        Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
+        Doctor doctor = doctorService.getDoctorById(doctorId);
+        String specialization = doctor.getSpecialization();
+        Pair<Patient, Integer> pair = queueService.getNext(specialization);
         if(pair == null){
             System.out.println("Problem in Popping Patient in startConsultation(Doctor Controller)");
             return -1;
         }
-        Doctor doctor = doctorService.getDoctorById(doctorId);
 //        if(doctor.getIsAvailable().equals("NO")){
 //            return -1;
 //        }
@@ -206,10 +207,4 @@ public class DoctorController {
         }
         return ResponseEntity.ok(prescriptionModels);
     }
-
-    @GetMapping("/get-queue-size")
-    public ResponseEntity<Integer> getQueueSize(){
-        return ResponseEntity.ok(queueService.getSize());
-    }
-
 }

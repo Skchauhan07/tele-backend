@@ -10,48 +10,50 @@ import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 @Service
 public class QueueServiceImpl implements QueueService {
-    private Queue<Pair<Patient, Integer>> pairQueue = new LinkedList<>();
+    private Map<String, Queue<Pair<Patient, Integer>>> mapQueue = new HashMap<>();
     @Autowired
     private PatientRepository patientRepository;
-    @Autowired
-    private DoctorRepository doctorRepository;
 
-    @Autowired
-    private ConsultationService consultationService;
-    public void addPatientToQueue(Patient patient, Integer roomId) {
-        System.out.println(patient.getPatientName() + " Added to Queue " + patient.getStatusQueue());
+    @Override
+    public void addPatient(Patient patient, Integer roomId, String specialization) {
+        specialization = specialization.toLowerCase();
         Pair<Patient, Integer> pair = Pair.of(patient, roomId);
-        pairQueue.offer(pair);
-        System.out.println("Queue Size = " + pairQueue.size());
+
+        System.out.println(patient.getPatientName()+" Added to queue of "+specialization);
+
+        if (mapQueue.containsKey(specialization)) {
+            mapQueue.get(specialization).add(pair);
+        } else {
+            Queue<Pair<Patient, Integer>> queue = new LinkedList<>();
+            queue.add(pair);
+            mapQueue.put(specialization, queue);
+        }
     }
 
     @Override
     public void leavePatientQueue(Patient patient) {
         patientRepository.updateStatusQueue("NO", patient.getPatientId());
     }
-
     @Override
-    public Pair<Patient, Integer> getNextInPairQueue() {
-        Pair<Patient, Integer> patientIntegerPair = pairQueue.poll();
-        if(patientIntegerPair != null && patientIntegerPair.getFirst().getStatusQueue().equals("YES")){
-            patientRepository.updateStatusQueue("NO", patientIntegerPair.getFirst().getPatientId());
-            patientIntegerPair.getFirst().setStatusQueue("NO");
-            System.out.println(patientIntegerPair.getFirst().getPatientName() + " Popped from Queue");
-            return patientIntegerPair;
-        } else if (patientIntegerPair == null) {
-            System.out.println("Patient Integer pair is NULL ");
+    public Pair<Patient, Integer> getNext(String specialization){
+        specialization = specialization.toLowerCase();
+        if (mapQueue.containsKey(specialization)) {
+            Pair<Patient, Integer> pair = mapQueue.get(specialization).poll();
+            if(pair.getFirst().getStatusQueue().equals("NO")){
+                return getNext(specialization);
+            }
+            System.out.println("Popped From Queue " + pair.getFirst().getPatientName() + "from " +specialization + " Queue");
+            if (mapQueue.get(specialization).isEmpty()) {
+                mapQueue.remove(specialization);
+                System.out.println("Queue associated with "+specialization+ " is empty");
+            }
+            return pair;
+        } else {
             return null;
         }
-        return getNextInPairQueue();
-    }
-
-    @Override
-    public Integer getSize() {
-        return pairQueue.size();
     }
 }

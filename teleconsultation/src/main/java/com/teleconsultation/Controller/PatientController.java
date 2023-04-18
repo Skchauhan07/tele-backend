@@ -38,8 +38,8 @@ public class PatientController {
 
 
     // Patient joins the Queue so set status = true.
-    @PostMapping("/join-queue/{patientId}")
-    public boolean joinQueue(@PathVariable Long patientId, @RequestParam("roomId") Integer roomId){
+    @PostMapping("/join-queue/{patientId}/{specialization}")
+    public boolean joinQueue(@PathVariable("patientId") Long patientId, @RequestParam("roomId") Integer roomId,@PathVariable("specialization") String specialization){
         //if patient already in queue then its status is yes
         Patient patient = patientService.getPatientById(patientId);
         if(patient.getStatusQueue().equals("YES")){
@@ -47,7 +47,7 @@ public class PatientController {
         }
         patientService.updateStatusQueue("YES", patient.getPatientId());
         patient.setStatusQueue("YES");
-        patientService.joinQueue(patient, roomId);
+        patientService.joinQueue(patient, roomId, specialization);
         return true;
     }
 
@@ -113,9 +113,24 @@ public class PatientController {
     }
 
     //Get Prescription
-    @GetMapping("/prescription/{patientId}/{doctorId}")
-    public ResponseEntity<byte[]> downloadPrescription(@PathVariable Long patientId, @PathVariable Long doctorId) {
-        Prescription prescription = prescriptionService.searchByPatientAndDoctor(patientId, doctorId);
+//    @GetMapping("/prescription/{patientId}/{doctorId}")
+//    public ResponseEntity<byte[]> downloadPrescription(@PathVariable Long patientId, @PathVariable Long doctorId) {
+//        Prescription prescription = prescriptionService.searchByPatientAndDoctor(patientId, doctorId);
+//        if(prescription == null){
+//            return ResponseEntity.notFound().build();
+//        }
+//        byte[] pdfFile = fileService.generatePdfFile(prescription);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_PDF);
+//        headers.setContentLength(pdfFile.length);
+//        headers.setContentDispositionFormData("attachment", "prescription.pdf");
+//        return ResponseEntity.ok().headers(headers).body(pdfFile);
+//    }
+
+    @GetMapping("/prescription/{prescriptionId}")
+    public ResponseEntity<byte[]> downloadPrescriptionOfPatient(@PathVariable Long prescriptionId) {
+        System.out.println("Here in download");
+        Prescription prescription = prescriptionService.searchByPrescriptionId(prescriptionId);
         if(prescription == null){
             return ResponseEntity.notFound().build();
         }
@@ -127,12 +142,35 @@ public class PatientController {
         return ResponseEntity.ok().headers(headers).body(pdfFile);
     }
 
+    @GetMapping("/get-prescriptions/{patientId}")
+    private ResponseEntity<List<PrescriptionModel>> getAllPrescriptions(@PathVariable Long patientId){
+        List<Prescription> prescriptions = prescriptionService.searchByPatient(patientId);
+        if(prescriptions == null){
+            return ResponseEntity.notFound().build();
+        }
+        List<PrescriptionModel> prescriptionModels = new ArrayList<>();
+        for(Prescription prescription : prescriptions){
+            PrescriptionModel prescriptionModel = PrescriptionModel.builder()
+                    .prescriptionId(prescription.getPrescriptionId())
+                    .medicineName(prescription.getMedicineName())
+                    .medicalFinding(prescription.getMedicalFinding())
+                    .duration(prescription.getDuration())
+                    .dosage(prescription.getDosage())
+                    .date(prescription.getDate())
+                    .build();
+            prescriptionModels.add(prescriptionModel);
+        }
+        return ResponseEntity.ok(prescriptionModels);
+    }
+
+    //get an appointment
     @PostMapping("/appointment")
     public Long getAppointment(@RequestParam("patientId") Long patientId, @RequestBody AppointmentModel appointmentModel){
         Appointment appointment = Appointment.builder()
                 .date(appointmentModel.getDate())
                 .symptoms(appointmentModel.getSymptoms())
                 .description(appointmentModel.getDescription())
+                .specialization(appointmentModel.getSpecialization())
                 .patient(patientService.getPatientById(patientId))
                 .build();
         //returning appointment id
@@ -157,5 +195,21 @@ public class PatientController {
         }
         return ResponseEntity.ok(prescriptionModels);
     }
+
+    @PostMapping("/add-patient")
+    public ResponseEntity<PatientModel> addPatient(@RequestBody PatientModel patientModel){
+        Patient patient = Patient.builder()
+                .patientName(patientModel.getPatientName())
+                .age(patientModel.getAge())
+                .gender(patientModel.getGender())
+                .medicalHistory(patientModel.getMedicalHistory())
+                .phoneNumber(patientModel.getPhoneNumber())
+                .role("ROLE_PATIENT")
+                .statusQueue("NO")
+                .build();
+        patientService.addPatient(patient);
+        return ResponseEntity.ok(patientModel);
+    }
+
 
 }

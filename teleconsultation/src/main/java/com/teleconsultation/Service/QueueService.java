@@ -10,8 +10,7 @@ import java.util.Queue;
 
 public interface QueueService
 {
-    public void addPatientToQueue(Patient patient, Integer roomId);
+    public void addPatient(Patient patient, Integer roomId, String specialization);
     public void leavePatientQueue(Patient patient);
-    public Pair<Patient, Integer> getNextInPairQueue();
-    Integer getSize();
+    public Pair<Patient, Integer> getNext(String specialization);
 }

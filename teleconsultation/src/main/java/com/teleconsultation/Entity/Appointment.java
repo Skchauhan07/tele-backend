@@ -21,6 +21,7 @@ public class Appointment {
     private Date date;
     private String symptoms;
     private String description;
+    private String specialization;
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "patient_id")
     private Patient patient;
