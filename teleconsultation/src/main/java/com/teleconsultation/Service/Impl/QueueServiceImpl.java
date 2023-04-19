@@ -56,4 +56,12 @@ public class QueueServiceImpl implements QueueService {
             return null;
         }
     }
+
+    @Override
+    public Integer getSize(String specialization) {
+        if(mapQueue.containsKey(specialization)){
+            return mapQueue.get(specialization).size();
+        }
+        return 0;
+    }
 }

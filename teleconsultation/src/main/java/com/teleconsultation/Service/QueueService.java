@@ -13,4 +13,6 @@ public interface QueueService
     public void addPatient(Patient patient, Integer roomId, String specialization);
     public void leavePatientQueue(Patient patient);
     public Pair<Patient, Integer> getNext(String specialization);
+
+    Integer getSize(String specialization);
 }

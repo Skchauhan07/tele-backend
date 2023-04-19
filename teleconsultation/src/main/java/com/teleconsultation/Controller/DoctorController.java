@@ -57,6 +57,12 @@ public class DoctorController {
         return doctorService.addDoctor(doctor1);
     }
 
+    @GetMapping("/queue-size/{specialization}")
+    public ResponseEntity<Integer> getQueueSize(@PathVariable String specialization){
+        Integer size = queueService.getSize(specialization);
+        return ResponseEntity.ok(size);
+    }
+
     @GetMapping("/role")
     public String getRole(@RequestParam String phoneNumber){
         String role = "";

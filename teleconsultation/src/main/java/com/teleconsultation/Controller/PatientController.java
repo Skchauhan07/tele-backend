@@ -164,8 +164,13 @@ public class PatientController {
     }
 
     //get an appointment
-    @PostMapping("/appointment")
-    public Long getAppointment(@RequestParam("patientId") Long patientId, @RequestBody AppointmentModel appointmentModel){
+    @PostMapping("/appointment/{patientId}")
+    public ResponseEntity<Long> getAppointment(@PathVariable("patientId") Long patientId, @RequestBody AppointmentModel appointmentModel){
+        Patient patient = patientService.getPatientById(patientId);
+        Appointment appointment1 = appointmentService.getAppointmentOfPatient(patient, appointmentModel.getDate());
+        if(appointment1 != null){
+            return ResponseEntity.badRequest().build();
+        }
         Appointment appointment = Appointment.builder()
                 .date(appointmentModel.getDate())
                 .symptoms(appointmentModel.getSymptoms())
@@ -174,7 +179,8 @@ public class PatientController {
                 .patient(patientService.getPatientById(patientId))
                 .build();
         //returning appointment id
-        return appointmentService.saveAppointment(appointment);
+        Long appId = appointmentService.saveAppointment(appointment);
+        return ResponseEntity.ok(appId);
     }
 
     @GetMapping("/prescription-list/{patientId}")
