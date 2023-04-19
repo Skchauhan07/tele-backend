@@ -57,8 +57,9 @@ public class DoctorController {
         return doctorService.addDoctor(doctor1);
     }
 
-    @GetMapping("/queue-size/{specialization}")
-    public ResponseEntity<Integer> getQueueSize(@PathVariable String specialization){
+    @GetMapping("/queue-size/{doctorId}")
+    public ResponseEntity<Integer> getQueueSize(@PathVariable Long doctorId){
+        String specialization = doctorService.getDoctorById(doctorId).getSpecialization().toLowerCase();
         Integer size = queueService.getSize(specialization);
         return ResponseEntity.ok(size);
     }
