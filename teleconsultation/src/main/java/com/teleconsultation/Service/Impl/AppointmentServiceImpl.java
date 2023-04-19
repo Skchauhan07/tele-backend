@@ -16,8 +16,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
-    @Autowired
-    private PatientService patientService;
 
     @Override
     public Long saveAppointment(Appointment appointment) {

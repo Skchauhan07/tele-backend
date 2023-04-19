@@ -1,9 +1,7 @@
 package com.teleconsultation.Controller;
 
 import com.teleconsultation.Entity.*;
-import com.teleconsultation.Model.ConsultationModel;
-import com.teleconsultation.Model.HealthRecordModel;
-import com.teleconsultation.Model.PrescriptionModel;
+import com.teleconsultation.Model.*;
 import com.teleconsultation.Repository.DoctorRepository;
 import com.teleconsultation.Service.*;
 import com.teleconsultation.Service.Impl.*;
@@ -13,12 +11,14 @@ import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.teleconsultation.Model.DoctorModel;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -38,6 +38,9 @@ public class DoctorController {
     private QueueService queueService;
     @Autowired
     private ConsultationService consultationService;
+    @Autowired
+    private AppointmentService appointmentService;
+
 //    @Autowired
 //    private BCryptPasswordEncoder passwordEncoder;
 
@@ -85,13 +88,13 @@ public class DoctorController {
         return ResponseEntity.ok("Updated Doctor");
     }
     @PostMapping("/consultation/{doctorId}")
-    public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
+    public ResponseEntity<Pair<Long, Integer>> startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
         Doctor doctor = doctorService.getDoctorById(doctorId);
         String specialization = doctor.getSpecialization();
         Pair<Patient, Integer> pair = queueService.getNext(specialization);
         if(pair == null){
             System.out.println("Problem in Popping Patient in startConsultation(Doctor Controller)");
-            return -1;
+            return ResponseEntity.notFound().build();
         }
 //        if(doctor.getIsAvailable().equals("NO")){
 //            return -1;
@@ -101,7 +104,8 @@ public class DoctorController {
 //        doctorService.updateIsAvailable("NO", doctorId);
         Patient patient = patientService.getPatientById(pair.getFirst().getPatientId());
         consultationService.startConsultation(doctor, patient);
-        return pair.getSecond();
+        Pair<Long, Integer> longIntegerPair = Pair.of(patient.getPatientId(), pair.getSecond());
+        return ResponseEntity.ok(longIntegerPair);
     }
 
     @GetMapping("/get-history/{phoneNumber}")
@@ -125,6 +129,21 @@ public class DoctorController {
         return ResponseEntity.ok(consultationModels);
     }
 
+    @GetMapping("/get-appointment-details/{patientId}/{date}")
+    public ResponseEntity<AppointmentModel> getAppointmentOfPatient(@PathVariable Long patientId, @PathVariable Date date){
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Date newDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Patient patient = patientService.getPatientById(patientId);
+        Appointment appointment = appointmentService.getAppointmentOfPatient(patient, newDate);
+        AppointmentModel appointmentModel = AppointmentModel.builder()
+                .date(newDate)
+                .patientId(appointment.getAppointmentId())
+                .symptoms(appointment.getSymptoms())
+                .description(appointment.getDescription())
+                .specialization(appointment.getSpecialization())
+                .build();
+        return ResponseEntity.ok(appointmentModel);
+    }
 
     // Use Doctor Model Here
     @GetMapping("/view")
