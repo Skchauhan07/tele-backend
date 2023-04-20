@@ -51,6 +51,16 @@ public class PatientController {
         return true;
     }
 
+    @PostMapping("/left-queue/{patientId}")
+    public boolean leftQueue(@PathVariable("patientId") Long patientId){
+        if(patientService.getPatientById((patientId)) == null){
+            System.out.println("No such Patient");
+            return false;
+        }
+        patientService.updateStatusQueue("NO", patientId);
+        return true;
+    }
+
     @GetMapping("/role")
     public String getRole(@RequestParam String phoneNumber){
         String role = "";
@@ -191,11 +201,13 @@ public class PatientController {
         List<PrescriptionModel> prescriptionModels = new ArrayList<>();
         for (Prescription prescription : prescriptions){
             PrescriptionModel prescriptionModel = PrescriptionModel.builder()
+                    .prescriptionId(prescription.getPrescriptionId())
                     .date(prescription.getDate())
                     .dosage(prescription.getDosage())
                     .duration(prescription.getDuration())
                     .medicalFinding(prescription.getMedicalFinding())
                     .medicineName(prescription.getMedicineName())
+                    .doctorName(prescription.getDoctor().getDoctorName())
                     .build();
             prescriptionModels.add(prescriptionModel);
         }
