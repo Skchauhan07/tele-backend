@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -23,7 +24,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Appointment getAppointmentOfPatient(Patient patient, Date date) {
+    public List<Appointment> getAppointmentOfPatient(Patient patient, Date date) {
         return appointmentRepository.searchAppointmentByPatientAndDate(patient, date);
     }
 }

@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    Appointment searchAppointmentByPatientAndDate(Patient patient, Date date);
+    List<Appointment> searchAppointmentByPatientAndDate(Patient patient, Date date);
 }

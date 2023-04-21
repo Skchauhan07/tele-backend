@@ -176,11 +176,11 @@ public class PatientController {
     //get an appointment
     @PostMapping("/appointment/{patientId}")
     public ResponseEntity<Long> getAppointment(@PathVariable("patientId") Long patientId, @RequestBody AppointmentModel appointmentModel){
-        Patient patient = patientService.getPatientById(patientId);
-        Appointment appointment1 = appointmentService.getAppointmentOfPatient(patient, appointmentModel.getDate());
-        if(appointment1 != null){
-            return ResponseEntity.badRequest().build();
-        }
+//        Patient patient = patientService.getPatientById(patientId);
+//        Appointment appointment1 = appointmentService.getAppointmentOfPatient(patient, appointmentModel.getDate());
+//        if(appointment1 != null){
+//            return ResponseEntity.badRequest().build();
+//        }
         Appointment appointment = Appointment.builder()
                 .date(appointmentModel.getDate())
                 .symptoms(appointmentModel.getSymptoms())

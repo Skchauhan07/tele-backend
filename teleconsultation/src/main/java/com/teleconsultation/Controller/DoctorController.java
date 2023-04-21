@@ -12,7 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Temporal;
 import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -129,14 +132,20 @@ public class DoctorController {
         return ResponseEntity.ok(consultationModels);
     }
 
-    @GetMapping("/get-appointment-details/{patientId}/{date}")
-    public ResponseEntity<AppointmentModel> getAppointmentOfPatient(@PathVariable Long patientId, @PathVariable Date date){
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date newDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    @GetMapping("/get-appointment-details/{patientId}")
+    public ResponseEntity<AppointmentModel> getAppointmentOfPatient(@PathVariable Long patientId) {
+        Date date1 = new Date();
+        System.out.println(date1);
         Patient patient = patientService.getPatientById(patientId);
-        Appointment appointment = appointmentService.getAppointmentOfPatient(patient, newDate);
+        List<Appointment> appointments = appointmentService.getAppointmentOfPatient(patient, date1);
+        if(appointments == null){
+            return ResponseEntity.badRequest().build();
+        }
+        Appointment appointment = appointments.get(appointments.size()-1);
+        System.out.println(appointment.getAppointmentId());
+
         AppointmentModel appointmentModel = AppointmentModel.builder()
-                .date(newDate)
+                .date(date1)
                 .patientId(appointment.getAppointmentId())
                 .symptoms(appointment.getSymptoms())
                 .description(appointment.getDescription())
