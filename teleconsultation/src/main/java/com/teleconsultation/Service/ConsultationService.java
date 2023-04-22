@@ -12,4 +12,5 @@ public interface ConsultationService {
     public void startConsultation(Doctor doctor, Patient patient) throws Exception;
 
     List<Consultation> getHistory(Long doctorId);
+    List<Consultation> getHistoryPatient(Patient patient);
 }

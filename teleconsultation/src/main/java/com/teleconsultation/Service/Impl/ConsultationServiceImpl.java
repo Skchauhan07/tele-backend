@@ -7,6 +7,7 @@ import com.teleconsultation.Repository.ConsultationRepository;
 import com.teleconsultation.Service.ConsultationService;
 import com.teleconsultation.Service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,5 +40,10 @@ public class ConsultationServiceImpl implements ConsultationService {
     public List<Consultation> getHistory(Long doctorId) {
         Doctor doctor = doctorService.getDoctorById(doctorId);
         return consultationRepository.findByDoctor(doctor);
+    }
+
+    @Override
+    public List<Consultation> getHistoryPatient(Patient patient) {
+        return consultationRepository.findByPatient(patient);
     }
 }

@@ -1,15 +1,14 @@
 package com.teleconsultation.Controller;
 
 import com.teleconsultation.Entity.Appointment;
+import com.teleconsultation.Entity.Consultation;
 import com.teleconsultation.Entity.Patient;
 import com.teleconsultation.Entity.Prescription;
 import com.teleconsultation.Model.AppointmentModel;
+import com.teleconsultation.Model.ConsultationModel;
 import com.teleconsultation.Model.PatientModel;
 import com.teleconsultation.Model.PrescriptionModel;
-import com.teleconsultation.Service.AppointmentService;
-import com.teleconsultation.Service.FileService;
-import com.teleconsultation.Service.PatientService;
-import com.teleconsultation.Service.PrescriptionService;
+import com.teleconsultation.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,8 @@ public class PatientController {
     private AppointmentService appointmentService;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private ConsultationService consultationService;
 
 
     // Patient joins the Queue so set status = true.
@@ -80,7 +81,25 @@ public class PatientController {
         return patientService.getPatientById(patientId).getPatientName();
     }
 
-
+    @GetMapping("/get-history-patient/{patientId}")
+    public ResponseEntity<List<ConsultationModel>> getHistoryOfPatient(@PathVariable Long patientId){
+        Patient patient = patientService.getPatientById(patientId);
+        List<Consultation> consultations = consultationService.getHistoryPatient(patient);
+        if(consultations == null){
+            return ResponseEntity.badRequest().build();
+        }
+        List<ConsultationModel> consultationModels = new ArrayList<>();
+        for(Consultation consultation : consultations){
+            ConsultationModel consultationModel = ConsultationModel.builder()
+                    .patientName(patient.getPatientName())
+                    .time(consultation.getTime())
+                    .doctorName(consultation.getDoctor().getDoctorName())
+                    .date(consultation.getDate())
+                    .build();
+            consultationModels.add(consultationModel);
+        }
+        return ResponseEntity.ok(consultationModels);
+    }
 
     @GetMapping("/get-patient/{patientId}")
     public ResponseEntity<PatientModel> getPatient(@PathVariable("patientId") Long patientId){
@@ -150,27 +169,6 @@ public class PatientController {
         headers.setContentLength(pdfFile.length);
         headers.setContentDispositionFormData("attachment", "prescription.pdf");
         return ResponseEntity.ok().headers(headers).body(pdfFile);
-    }
-
-    @GetMapping("/get-prescriptions/{patientId}")
-    private ResponseEntity<List<PrescriptionModel>> getAllPrescriptions(@PathVariable Long patientId){
-        List<Prescription> prescriptions = prescriptionService.searchByPatient(patientId);
-        if(prescriptions == null){
-            return ResponseEntity.notFound().build();
-        }
-        List<PrescriptionModel> prescriptionModels = new ArrayList<>();
-        for(Prescription prescription : prescriptions){
-            PrescriptionModel prescriptionModel = PrescriptionModel.builder()
-                    .prescriptionId(prescription.getPrescriptionId())
-                    .medicineName(prescription.getMedicineName())
-                    .medicalFinding(prescription.getMedicalFinding())
-                    .duration(prescription.getDuration())
-                    .dosage(prescription.getDosage())
-                    .date(prescription.getDate())
-                    .build();
-            prescriptionModels.add(prescriptionModel);
-        }
-        return ResponseEntity.ok(prescriptionModels);
     }
 
     //get an appointment
