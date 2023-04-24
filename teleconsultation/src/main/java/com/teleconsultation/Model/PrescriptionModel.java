@@ -23,4 +23,5 @@ public class PrescriptionModel {
     private String dosage;
     private String duration;
     private String doctorName;
+    private String patientName;
 }

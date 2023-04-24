@@ -237,6 +237,7 @@ public class DoctorController {
                     .duration(prescription.getDuration())
                     .medicineName(prescription.getMedicineName())
                     .medicalFinding(prescription.getMedicalFinding())
+                    .patientName(prescription.getPatient().getPatientName())
                     .build();
             prescriptionModels.add(prescriptionModel);
         }
