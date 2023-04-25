@@ -40,15 +40,16 @@ public class HomeController {
 
     @PostMapping("/authenticate")
     public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception{
-
-        try {
+        try
+        {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             jwtRequest.getUsername(),
                             jwtRequest.getPassword()
                     )
             );
-        } catch (BadCredentialsException e) {
+        }
+        catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
 
@@ -61,9 +62,10 @@ public class HomeController {
     }
 
     @PostMapping("/authenticate/add")
-    public ResponseEntity<PatientModel> addPatient(@RequestBody PatientModel patientModel){
+    public ResponseEntity<PatientModel> addPatient(@RequestBody PatientModel patientModel)
+    {
         List<Patient> patients =  patientService.getPatientListForPhoneNumber(patientModel.getPhoneNumber());
-        if(patients == null){
+        if(!patients.isEmpty()){
             return ResponseEntity.badRequest().build();
         }
         Patient patient = Patient.builder()
