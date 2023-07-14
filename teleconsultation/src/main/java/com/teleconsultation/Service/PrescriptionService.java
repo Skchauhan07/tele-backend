@@ -15,4 +15,6 @@ public interface PrescriptionService {
     List<Prescription> searchByPatient(Long patientId);
 
     List<Prescription> searchByDoctor(Long doctorId);
+
+    Prescription searchByPrescriptionId(Long prescriptionId);
 }

@@ -16,6 +16,8 @@ import java.util.Date;
 public class AppointmentModel {
     @Temporal(TemporalType.DATE)
     private Date date;
+    private Long patientId;
+    private String specialization;
     private String symptoms;
     private String description;
 }

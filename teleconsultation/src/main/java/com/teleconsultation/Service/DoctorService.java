@@ -23,5 +23,7 @@ public interface DoctorService {
 
     void updateIsAvailable(String no, Long doctorId);
 
+    Doctor findDoctorByContact(String phoneNumber);
+
     void updateDoctorAttributes(Doctor doctor, DoctorModel doctorModel);
 }

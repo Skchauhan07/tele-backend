@@ -61,6 +61,11 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public Doctor findDoctorByContact(String phoneNumber) {
+        return doctorRepository.findDoctorByContact(phoneNumber);
+    }
+
+    @Override
     public void updateDoctorAttributes(Doctor doctor, DoctorModel doctorModel) {
         if (doctorModel.getDoctorName() != null) {
             doctor.setDoctorName(doctorModel.getDoctorName());

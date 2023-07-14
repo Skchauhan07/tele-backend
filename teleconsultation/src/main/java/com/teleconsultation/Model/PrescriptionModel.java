@@ -15,10 +15,13 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class PrescriptionModel {
+    private Long prescriptionId;
     @Temporal(TemporalType.DATE)
     private Date date;
     private String medicalFinding;
     private String medicineName;
     private String dosage;
     private String duration;
+    private String doctorName;
+    private String patientName;
 }

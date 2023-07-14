@@ -31,8 +31,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void joinQueue(Patient patient, Integer roomId) {
-        queueService.addPatientToQueue(patient, roomId);
+    public void joinQueue(Patient patient, Integer roomId, String specialization) {
+        queueService.addPatient(patient, roomId, specialization);
     }
 
     @Override
@@ -49,6 +49,9 @@ public class PatientServiceImpl implements PatientService {
     public List<Patient> getPatientListForPhoneNumber(String phoneNumber) {
 
         List<Patient> patients = patientRepository.findPatientByPhoneNumber(phoneNumber);
+        if(patients == null){
+            return null;
+        }
         for(Patient patient : patients){
             System.out.println(patient.getPatientName());
         }

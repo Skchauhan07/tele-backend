@@ -1,12 +1,7 @@
 package com.teleconsultation.Controller;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teleconsultation.Entity.*;
-import com.teleconsultation.Model.ConsultationModel;
-import com.teleconsultation.Model.DoctorModel;
-import com.teleconsultation.Model.HealthRecordModel;
-import com.teleconsultation.Model.PrescriptionModel;
+import com.teleconsultation.Model.*;
 import com.teleconsultation.Repository.DoctorRepository;
 import com.teleconsultation.Service.*;
 import com.teleconsultation.Service.Impl.*;
@@ -17,17 +12,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Temporal;
 import javax.validation.Valid;
-import java.io.DataInput;
-import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 @RequestMapping("/doctor")
 public class DoctorController {
     //login
@@ -43,8 +41,12 @@ public class DoctorController {
     private QueueService queueService;
     @Autowired
     private ConsultationService consultationService;
+    @Autowired
+    private AppointmentService appointmentService;
+
 //    @Autowired
 //    private BCryptPasswordEncoder passwordEncoder;
+
     //after adding doctor initially he is not in queue. so statusQueue = false
     @PostMapping("/add")
     public Doctor addDoctor(@Valid @RequestBody Doctor doctor){
@@ -56,10 +58,29 @@ public class DoctorController {
                 .specialization(doctor.getSpecialization())
                 .age(doctor.getAge())
                 .isAvailable("YES")
+                .role("ROLE_DOCTOR")
                 .build();
         return doctorService.addDoctor(doctor1);
     }
 
+    @GetMapping("/queue-size/{doctorId}")
+    public ResponseEntity<Integer> getQueueSize(@PathVariable Long doctorId){
+        String specialization = doctorService.getDoctorById(doctorId).getSpecialization().toLowerCase();
+        Integer size = queueService.getSize(specialization);
+        return ResponseEntity.ok(size);
+    }
+
+    @GetMapping("/role")
+    public String getRole(@RequestParam String phoneNumber){
+        String role = "";
+        try{
+            role = doctorService.getDoctorByContact(phoneNumber).getRole();
+        }
+        catch (Exception e){
+            return "Not Found";
+        }
+        return role;
+    }
     @PatchMapping("/update-doctor/{id}")
     public ResponseEntity<String> updateDoctor(@PathVariable("id") Long id, @RequestBody DoctorModel doctorModel) {
         Doctor doctor = doctorService.getDoctorById(id);
@@ -70,13 +91,14 @@ public class DoctorController {
         return ResponseEntity.ok("Updated Doctor");
     }
     @PostMapping("/consultation/{doctorId}")
-    public int startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
-        Pair<Patient, Integer> pair = queueService.getNextInPairQueue();
+    public ResponseEntity<Pair<Long, Integer>> startConsultation(@PathVariable("doctorId") Long doctorId) throws Exception {
+        Doctor doctor = doctorService.getDoctorById(doctorId);
+        String specialization = doctor.getSpecialization();
+        Pair<Patient, Integer> pair = queueService.getNext(specialization);
         if(pair == null){
             System.out.println("Problem in Popping Patient in startConsultation(Doctor Controller)");
-            return -1;
+            return ResponseEntity.notFound().build();
         }
-        Doctor doctor = doctorService.getDoctorById(doctorId);
 //        if(doctor.getIsAvailable().equals("NO")){
 //            return -1;
 //        }
@@ -85,12 +107,14 @@ public class DoctorController {
 //        doctorService.updateIsAvailable("NO", doctorId);
         Patient patient = patientService.getPatientById(pair.getFirst().getPatientId());
         consultationService.startConsultation(doctor, patient);
-        return pair.getSecond();
+        Pair<Long, Integer> longIntegerPair = Pair.of(patient.getPatientId(), pair.getSecond());
+        return ResponseEntity.ok(longIntegerPair);
     }
 
-    @GetMapping("/get-history/{doctorId}")
-    public ResponseEntity<List<ConsultationModel>> getHistory(@PathVariable("doctorId") Long doctorId){
-        List<Consultation> consultations = consultationService.getHistory(doctorId);
+    @GetMapping("/get-history/{phoneNumber}")
+    public ResponseEntity<List<ConsultationModel>> getHistory(@PathVariable("phoneNumber") String phoneNumber){
+        Doctor doctor = doctorService.getDoctorByContact(phoneNumber);
+        List<Consultation> consultations = consultationService.getHistory(doctor.getDoctorId());
         List<ConsultationModel> consultationModels = new ArrayList<>();
         if(consultations == null){
             return ResponseEntity.notFound().build();
@@ -101,12 +125,34 @@ public class DoctorController {
                     .time(consultation.getTime())
                     .doctorId(consultation.getDoctor().getDoctorId())
                     .patientId(consultation.getPatient().getPatientId())
+                    .patientName(patientService.getPatientById(consultation.getPatient().getPatientId()).getPatientName())
                     .build();
             consultationModels.add(consultationModel);
         }
         return ResponseEntity.ok(consultationModels);
     }
 
+    @GetMapping("/get-appointment-details/{patientId}")
+    public ResponseEntity<AppointmentModel> getAppointmentOfPatient(@PathVariable Long patientId) {
+        Date date1 = new Date();
+        System.out.println(date1);
+        Patient patient = patientService.getPatientById(patientId);
+        List<Appointment> appointments = appointmentService.getAppointmentOfPatient(patient, date1);
+        if(appointments == null){
+            return ResponseEntity.badRequest().build();
+        }
+        Appointment appointment = appointments.get(appointments.size()-1);
+        System.out.println(appointment.getAppointmentId());
+
+        AppointmentModel appointmentModel = AppointmentModel.builder()
+                .date(date1)
+                .patientId(appointment.getAppointmentId())
+                .symptoms(appointment.getSymptoms())
+                .description(appointment.getDescription())
+                .specialization(appointment.getSpecialization())
+                .build();
+        return ResponseEntity.ok(appointmentModel);
+    }
 
     // Use Doctor Model Here
     @GetMapping("/view")
@@ -125,6 +171,7 @@ public class DoctorController {
             return ResponseEntity.notFound().build();
         }
         DoctorModel doctorModel = DoctorModel.builder()
+                .doctorId(doctor.getDoctorId())
                 .doctorName(doctor.getDoctorName())
                 .contact(doctor.getContact())
                 .emailId(doctor.getEmailId())
@@ -190,15 +237,10 @@ public class DoctorController {
                     .duration(prescription.getDuration())
                     .medicineName(prescription.getMedicineName())
                     .medicalFinding(prescription.getMedicalFinding())
+                    .patientName(prescription.getPatient().getPatientName())
                     .build();
             prescriptionModels.add(prescriptionModel);
         }
         return ResponseEntity.ok(prescriptionModels);
     }
-
-    @GetMapping("/get-queue-size")
-    public ResponseEntity<Integer> getQueueSize(){
-        return ResponseEntity.ok(queueService.getSize());
-    }
-
 }
